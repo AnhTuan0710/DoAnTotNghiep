@@ -1,0 +1,26 @@
+@import "../../index.scss";
+.dashboard-container {
+  width: 100%;
+  .landingpage-content {
+    margin-top: 10px;
+    h5 {
+      font-weight: 700;
+      text-align: center;
+    }
+    .product-container {
+      margin-top: 10px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 10px;
+      .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .name-category {
+          font-weight: 600;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
