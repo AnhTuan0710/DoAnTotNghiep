@@ -19,16 +19,11 @@ export default function SildeDashboard() {
       }}
       thumbs={{ swiper: thums }}
       modules={[FreeMode, Navigation, Thumbs, Autoplay, Pagination]}
-
+      className='slide-container'
     >
       {listImage.map((item, index) => {
-        return <SwiperSlide key={index}>
-          <img
-            src={item.src}
-            alt=""
-            className="w-full h-full lg:rounded-t-2xl rounded-2xl"
-            style={{ width: '100%', height: '400px', borderRadius: '10px' }}
-          />
+        return <SwiperSlide key={index} className='slide-item'>
+          <img src={item.src} alt="" className='slide-image' />
         </SwiperSlide>
       })}
     </Swiper>
