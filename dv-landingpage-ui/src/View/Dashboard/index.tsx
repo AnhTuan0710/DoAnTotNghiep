@@ -12,7 +12,7 @@ export default function Dashboard() {
         <Col xs={24} md={4}>
           <ListCategory />
         </Col>
-        <Col xs={24} md={14}>
+        <Col xs={24} md={20}>
           <SildeDashboard />
         </Col>
       </Row>

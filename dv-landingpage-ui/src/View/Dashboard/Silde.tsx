@@ -1,12 +1,12 @@
-import { useState } from "react";
 import { Autoplay, FreeMode, Navigation, Pagination, Thumbs } from "swiper"
 import { Swiper, SwiperSlide } from "swiper/react"
+import { SLIDE_1, SLIDE_2, SLIDE_3, SLIDE_4 } from "../../assets";
 export default function SildeDashboard() {
-  const [thums, setThums] = useState<any>(null);
   const listImage = [
-    { src: require(`./Images/Slide1.png`) },
-    { src: require(`./Images/slide2.png`) },
-    { src: require(`./Images/slide3.png`) },
+    { src: SLIDE_4 },
+    { src: SLIDE_3 },
+    { src: SLIDE_1 },
+    { src: SLIDE_2 },
   ]
 
   return (
@@ -17,7 +17,6 @@ export default function SildeDashboard() {
         delay: 2500,
         disableOnInteraction: false,
       }}
-      thumbs={{ swiper: thums }}
       modules={[FreeMode, Navigation, Thumbs, Autoplay, Pagination]}
 
     >
@@ -26,8 +25,7 @@ export default function SildeDashboard() {
           <img
             src={item.src}
             alt=""
-            className="w-full h-full lg:rounded-t-2xl rounded-2xl"
-            style={{ width: '100%', height: '400px', borderRadius: '10px' }}
+            style={{ width: '100%', height: '500px', borderRadius: '5px' }}
           />
         </SwiperSlide>
       })}
