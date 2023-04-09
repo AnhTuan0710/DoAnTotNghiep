@@ -18,15 +18,20 @@ export default function SildeDashboard() {
         disableOnInteraction: false,
       }}
       modules={[FreeMode, Navigation, Thumbs, Autoplay, Pagination]}
-
+      className='slide-container'
     >
       {listImage.map((item, index) => {
+<<<<<<< HEAD
         return <SwiperSlide key={index}>
           <img
             src={item.src}
             alt=""
             style={{ width: '100%', height: '500px', borderRadius: '5px' }}
           />
+=======
+        return <SwiperSlide key={index} className='slide-item'>
+          <img src={item.src} alt="" className='slide-image' />
+>>>>>>> 8b91beb690538cd2a2e4106c3a02dae7d064c17e
         </SwiperSlide>
       })}
     </Swiper>

@@ -1,0 +1,30 @@
+@import "../../index.scss";
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  background-color: $main;
+  color: white;
+  font-weight: bold;
+  width: 100%;
+  padding: 0px;
+  padding-top: 10px;
+  h5 {
+    font-weight: 700;
+  }
+  .info-item {
+    display: flex;
+    align-items: "center";
+    p {
+      margin-left: 10px;
+    }
+    .icon {
+      border-radius: 50%;
+    }
+  }
+}
+.footer-copyright {
+  padding-top: 10px;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 50px;
+}

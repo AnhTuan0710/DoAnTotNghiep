@@ -1,6 +1,7 @@
 import { Layout } from 'antd'
 import { Content, Footer, Header } from 'antd/es/layout/layout'
 import { Outlet } from 'react-router-dom'
+import FooterLayout from '../../components/Footer'
 import HeaderLayout from '../../components/Header'
 
 export default function Main() {
@@ -13,7 +14,9 @@ export default function Main() {
         <Content>
           <Outlet></Outlet>
         </Content>
-        <Footer>Footer</Footer>
+        <Footer style={{ backgroundColor: '#f5f5f5', position: 'sticky', top: 0, zIndex: 1000, width: '100%', padding: '0px' }}>
+          <FooterLayout/>
+        </Footer>
       </Layout>
     </div>
   )
