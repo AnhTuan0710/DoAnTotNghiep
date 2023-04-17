@@ -1,43 +1,68 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Category } from './../../models/category.entity';
+import { Product } from './../../models/product.entity';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { Product } from '../../models/product.entity';
+import { Repository } from 'typeorm';
+import { ProductDto } from '../../dto/product.dto';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
-    private readonly productService: Repository<Product>
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) { }
 
+  async createProduct(productDto: ProductDto): Promise<Product> {
+    const { name, price, image, size, weight, description, categoryId } = productDto;
+    const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+    const product = new Product();
+    product.name = name;
+    product.price = price;
+    product.image = image;
+    product.size = size;
+    product.weight = weight;
+    product.description = description;
+    product.category = category;
+
+    return await this.productRepository.save(product);
+  }
+
   async findAll(): Promise<Product[]> {
-    return await this.productService.find();
+    return await this.productRepository.find({ relations: ['category'] });
   }
 
-  async createProduct(product: Product): Promise<Product> {
-    const productExits = await this.productService.findOne({ where: { name: product.name } })
-    if (productExits) {
-      throw new HttpException('Tên sản phẩm đã tồn tại', HttpStatus.BAD_REQUEST);
-    } else {
-      return await this.productService.save(product)
-    }
+  async findOne(id: number): Promise<Product> {
+    return await this.productRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['category']
+    });
   }
 
-  async updateProduct(id: number, product: Product): Promise<UpdateResult> {
-    const productFind = await this.productService.findOne({ where: { id: id } })
-    if (productFind) {
-      return await this.productService.update(id, product)
-    } else {
-      throw new HttpException('Không tìm thấy mã sản phẩm', HttpStatus.BAD_REQUEST);
-    }
+  async updateProduct(id: number, productDto: ProductDto): Promise<Product> {
+    const { name, price, image, size, weight, description, categoryId } = productDto;
+    const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
+    const product = await this.productRepository.findOne({ where: { id: id } });
+    product.name = name;
+    product.price = price;
+    product.image = image;
+    product.size = size;
+    product.weight = weight;
+    product.description = description;
+    product.category = category;
+
+    return await this.productRepository.save(product);
   }
 
-  async deleteProduct(id): Promise<DeleteResult> {
-    const productFind = await this.productService.findOne({ where: { id: id } })
-    if (productFind) {
-      return await this.productService.delete(id)
-    } else {
-      throw new HttpException('Không tìm thấy mã sản phẩm', HttpStatus.BAD_REQUEST);
-    }
+  async delete(id: number): Promise<void> {
+    await this.categoryRepository.delete(id);
+  }
+
+  async getAllProductOfCategory(id: number): Promise<Product[]> {
+    const listproduct = await this.productRepository.find();
+    return listproduct.filter(item => item.category.id === id)
   }
 }

@@ -1,6 +1,7 @@
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Category } from './category.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-@Entity({ name: 'dv_product' })
+
+@Entity({name: 'dv_product'})
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;
@@ -9,40 +10,20 @@ export class Product {
   name: string;
 
   @Column()
-  price?: number;
+  price: number;
 
   @Column()
-  image?: string;
+  image: string;
 
   @Column()
-  size?: string;
+  size: string;
 
   @Column()
-  unit?: string;
+  weight: string;
 
   @Column()
-  weight?: string;
-
-  @Column()
-  description?: string;
-
-  @Column({ default: 1 })
-  active_flg?: number;
-
-  @Column({ default: 1 })
-  status?: number;
-
-  @Column({ nullable: true })
-  
-  create_date?: Date;
-
-  @Column({ nullable: true })
-  update_date?: Date;
-
-  @Column({ nullable: true })
-  categoryId?: number;
+  description: string;
 
   @ManyToOne(() => Category, (category) => category.products)
-  category: Category
-
+  category: Category;
 }

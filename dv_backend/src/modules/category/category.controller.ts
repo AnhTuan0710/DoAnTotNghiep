@@ -1,43 +1,38 @@
-import { CategoryService } from './category.service';
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { Category } from '../../models/category.entity';
+import { CategoryService } from './category.service';
 
 @Controller('categories')
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) { }
+  constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
   findAll(): Promise<Category[]> {
-    return this.categoryService.findAll()
+    return this.categoryService.findAll();
+  }
+
+  @Get('product')
+  findAllWithProducts(): Promise<Category[]> {
+    return this.categoryService.findAllWithProducts();
   }
 
   @Get(':id')
-  get(@Param() params) {
-    return this.categoryService.findOne(params.id);
-  }
-
-  @Get('products/:id')
-  getProductOfCategory(@Param() params) {
-    return this.categoryService.getProductOfCategory(params.id)
-  }
-
-  @Get('products')
-  getCategoryCombineProduct() {
-    return this.categoryService.getCategoryProduct()
+  findOne(@Param('id') id: string): Promise<Category> {
+    return this.categoryService.findOne(+id);
   }
 
   @Post()
-  createCategoryNew(@Body() body: Category) {
-    return this.categoryService.createNewCategory(body)
+  create(@Body() category: Category): Promise<Category> {
+    return this.categoryService.create(category);
   }
 
-  @Put(":id")
-  updateCategory(@Param() params, @Body() category: Category) {
-    return this.categoryService.updateCategory(params.id, category)
+  @Put(':id')
+  update(@Param('id') id: string, @Body() category: Category): Promise<Category> {
+    return this.categoryService.update(+id, category);
   }
 
   @Delete(':id')
-  deleteCategory(@Param() params) {
-    return this.categoryService.deleteCategory(params.id);
+  delete(@Param('id') id: string): Promise<void> {
+    return this.categoryService.delete(+id);
   }
 }

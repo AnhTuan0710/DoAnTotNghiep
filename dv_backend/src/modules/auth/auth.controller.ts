@@ -1,9 +1,9 @@
-import { Controller, Request, Post, UseGuards, Body, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { RegisterDto } from '../../dto/register.dto';
 import { MailService } from '../mail/mail.service';
 import { UsersService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
+import * as bcrypt from 'bcrypt';
 
 @Controller('auth')
 export class AuthController {
@@ -14,9 +14,10 @@ export class AuthController {
     private mailService: MailService,
   ) { }
 
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
+  async login(@Body() req) {
+    this.logger.log(`Bạn đang đăng nhập với tài khoản ${req}`);
     return this.authService.login(req);
   }
 
@@ -24,7 +25,7 @@ export class AuthController {
   async register(@Body() signUpDto: RegisterDto) {
     this.logger.log(`Start signup user with data ${JSON.stringify(signUpDto)}`);
     const { email, password, name } = signUpDto;
-    const oldEmail = await this.userService.findUserByEmail(email);
+    const oldEmail = await this.userService.findOne(email);
     if (oldEmail) {
       this.logger.warn(`Email is already used ${signUpDto.email}`);
       throw new HttpException('Email is already used', HttpStatus.BAD_REQUEST);
@@ -36,7 +37,9 @@ export class AuthController {
       this.logger.error('sendEmail error: ', error);
       return
     }
-    await this.userService.regiter(signUpDto);
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    await this.userService.regiter({email,name, password: hashedPassword});
     this.logger.log(`Signup new user with data ${JSON.stringify(signUpDto)}`);
     return {
       status: HttpStatus.OK,

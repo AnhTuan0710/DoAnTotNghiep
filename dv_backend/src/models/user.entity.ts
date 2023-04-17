@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Invoice } from './invoice.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity({ name: 'dv_user' })
 export class User {
   @PrimaryGeneratedColumn()
@@ -32,6 +31,4 @@ export class User {
   @Column({ default: 1 })
   status?: number;
 
-  @OneToMany(() => Invoice, (invoice) => invoice.userId)
-  invoices?: Invoice[];
 }

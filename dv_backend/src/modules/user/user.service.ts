@@ -18,17 +18,11 @@ export class UsersService {
     return await this.usersService.save(user)
   }
 
-  async findUserByEmail(email: string): Promise<User | undefined> {
-    return this.usersService.findOne({ where: { email: email } });
-  }
-
   async findAll(): Promise<User[] | undefined> {
     return await this.usersService.find()
   }
 
-  async getAllInvoice(userId: number): Promise<User> {
-    const user = await this.usersService.findOne({where: {id: userId}, relations: ['invoices']})
-    return user
+  async getUserInfo(id: number): Promise<User | undefined> {
+    return this.usersService.findOne({ where: { id: id } });
   }
-
 }
