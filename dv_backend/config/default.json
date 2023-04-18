@@ -12,7 +12,7 @@
     "host": "smtp.gmail.com",
     "port": 465,
     "user": "anhtuanbarca@gmail.com",
-    "pass": "",
+    "pass": "122",
     "from": "anhtuanbarca@gmail.com",
     "secure": true
   },
