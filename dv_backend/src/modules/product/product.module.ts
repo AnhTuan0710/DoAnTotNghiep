@@ -4,7 +4,6 @@ import { ProductService } from './product.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from '../../models/product.entity';
-import { OrdersModule } from '../order/order.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product]), CategoriesModule],

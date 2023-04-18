@@ -1,8 +1,10 @@
 import { UsersService } from './user.service';
 import { Controller, UseGuards, Get, Query } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('users')
 export class UserController {
   constructor(private userService: UsersService) { }
 

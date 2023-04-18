@@ -4,8 +4,10 @@ import { MailService } from '../mail/mail.service';
 import { UsersService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import * as bcrypt from 'bcrypt';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
   constructor(

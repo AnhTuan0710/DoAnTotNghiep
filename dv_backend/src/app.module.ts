@@ -29,7 +29,7 @@ import { OrdersModule } from './modules/order/order.module';
     UsersModule,
     ProductsModule,
     CategoriesModule,
-    // OrdersModule,
+    OrdersModule,
   ],
   controllers: [
     AppController

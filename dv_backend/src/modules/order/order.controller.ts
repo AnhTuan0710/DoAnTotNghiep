@@ -2,10 +2,12 @@ import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common'
 import { OrderService } from './order.service';
 import { Order } from '../../models/order.entity';
 import { CreateOrderDto } from '../../dto/order.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('orders')
+@ApiTags('orders')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
 
   @Get()
   async getAllOrders(): Promise<Order[]> {
@@ -30,5 +32,10 @@ export class OrderController {
   @Delete(':id')
   async deleteOrder(@Param('id') id: number): Promise<void> {
     return await this.orderService.deleteOrder(id);
+  }
+
+  @Get('user/:id')
+  async getOrderByUser(@Param('id') id: number): Promise<Order[]> {
+    return await this.orderService.getOrderByUser(id);
   }
 }

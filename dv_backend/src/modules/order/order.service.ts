@@ -66,4 +66,9 @@ export class OrderService {
   async deleteOrder(id: number): Promise<void> {
     await this.orderRepository.delete(id);
   }
+
+  async getOrderByUser(id: number): Promise<Order[]> {
+    const user = await this.userRepository.findOne({ where: { id: id } });
+    return this.orderRepository.find({ where: { user: user }, relations: ['user', 'products'] });
+  }
 }

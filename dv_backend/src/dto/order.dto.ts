@@ -11,3 +11,16 @@ export class UpdateOrderDto {
   userId?: number;
   productIds?: number[];
 }
+
+export class OrderCreateNewDto {
+  userId: number;
+  product: ProductOrderDto[];
+  totalAmount: number;
+  createDate?: string;
+  updateDate?: string;
+}
+
+export class ProductOrderDto {
+  id: number;
+  count: number;
+}

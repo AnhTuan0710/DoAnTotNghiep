@@ -8,6 +8,14 @@
       "admin": "http://localhost:5685"
     }
   },
+  "mail_config": {
+    "host": "smtp.gmail.com",
+    "port": 465,
+    "user": "tirukit@gmail.com",
+    "pass": "lvztmjmapwpgakpq",
+    "from": "tirukit@gmail.com",
+    "secure": true
+  },
   "database": {
     "type": "mysql",
     "host": "127.0.0.1",

@@ -19,4 +19,16 @@ export class Order {
   @ManyToMany(() => Product)
   @JoinTable()
   products: Product[];
+
+  @Column({ nullable: true })
+  create_date?: Date;
+
+  @Column({ nullable: true })
+  update_date?: Date;
+
+  @Column({ default: 1 })
+  active_flg?: number;
+
+  @Column({ default: 1 })
+  status?: number;
 }

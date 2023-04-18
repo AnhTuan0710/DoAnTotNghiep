@@ -3,9 +3,11 @@ import { ProductService } from './product.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Product } from '../../models/product.entity';
 import { ProductDto } from '../../dto/product.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 // @UseGuards(JwtAuthGuard)
 @Controller('products')
+@ApiTags('products')
 export class ProductController {
   constructor(private productService: ProductService) {}
 

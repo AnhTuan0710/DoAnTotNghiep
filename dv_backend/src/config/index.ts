@@ -5,12 +5,12 @@ export const APP_URL = {
 }
 
 export const MAIL_CONFIG = {
-  HOST: process.env.EMAIL_HOST,
-  PORT: process.env.EMAIL_PORT,
-  USER: process.env.EMAIL_USER,
-  PASS: process.env.EMAIL_PASS,
-  FROM: process.env.EMAIL_FROM,
-  SECURE: process.env.EMAIL_SECURE,
+  HOST: config.get<string>('mail_config.host'),
+  PORT: config.get<number>('mail_config.port'),
+  USER: config.get<string>('mail_config.user'),
+  PASS: config.get<string>('mail_config.pass'),
+  FROM: config.get<string>('mail_config.from'),
+  SECURE: config.get<boolean>('mail_config.secure'),
 };
 
 export const DATABASE = {

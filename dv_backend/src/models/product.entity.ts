@@ -1,5 +1,5 @@
 import { Order } from './order.entity';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Category } from './category.entity';
 
 @Entity({name: 'dv_product'})
@@ -29,6 +29,17 @@ export class Product {
   category: Category;
 
   @ManyToMany(() => Order)
-  @JoinTable()
   orders: Order[];
+
+  @Column({ nullable: true })
+  create_date?: Date;
+
+  @Column({ nullable: true })
+  update_date?: Date;
+
+  @Column({ default: 1 })
+  active_flg?: number;
+
+  @Column({ default: 1 })
+  status?: number;
 }
