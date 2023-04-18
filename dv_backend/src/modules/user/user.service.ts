@@ -25,4 +25,8 @@ export class UsersService {
   async getUserInfo(id: number): Promise<User | undefined> {
     return this.usersService.findOne({ where: { id: id } });
   }
+
+  async findById(id: number): Promise<User | undefined> {
+    return this.usersService.findOne({ where: { id: id } });
+  }
 }

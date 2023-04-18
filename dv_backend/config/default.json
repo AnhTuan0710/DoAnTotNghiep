@@ -12,7 +12,7 @@
     "host": "smtp.gmail.com",
     "port": 465,
     "user": "anhtuanbarca@gmail.com",
-    "pass": "zjvcyberazblgsmq",
+    "pass": "cqfouqwwfkwnnqdg",
     "from": "anhtuanbarca@gmail.com",
     "secure": true
   },
@@ -21,7 +21,7 @@
     "host": "127.0.0.1",
     "port": 3306,
     "username": "root",
-    "password": "Tuan@07102000",
-    "database": "dv_backend"
+    "password": "123456",
+    "database": "nestjs"
   }
 }

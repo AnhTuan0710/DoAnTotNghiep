@@ -10,6 +10,8 @@ import { User } from './models/user.entity';
 import { DATABASE } from './config';
 import { Product } from './models/product.entity';
 import { ProductsModule } from './modules/product/product.module';
+import { Order } from './models/order.entity';
+import { OrdersModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -20,13 +22,14 @@ import { ProductsModule } from './modules/product/product.module';
       username: DATABASE.USER_NAME,
       password: DATABASE.PASSWORD,
       database: DATABASE.DATABASE,
-      entities: [User, Product, Category],
+      entities: [User, Product, Category, Order],
       synchronize: true,
     }),
     AuthModule,
     UsersModule,
     ProductsModule,
     CategoriesModule,
+    OrdersModule,
   ],
   controllers: [
     AppController
