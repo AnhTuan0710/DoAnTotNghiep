@@ -8,20 +8,12 @@
       "admin": "http://localhost:5685"
     }
   },
-  "mail_config": {
-    "host": "smtp.gmail.com",
-    "port": 465,
-    "user": "anhtuanbarca@gmail.com",
-    "pass": "122",
-    "from": "anhtuanbarca@gmail.com",
-    "secure": true
-  },
   "database": {
     "type": "mysql",
     "host": "127.0.0.1",
     "port": 3306,
     "username": "root",
-    "password": "123456",
-    "database": "nestjs"
+    "password": "Tuan@07102000",
+    "database": "dv_backend"
   }
 }
