@@ -6,7 +6,7 @@ export function MailCreateUserTemplate(name: string, email: string, password: st
     html: `
             <div style="width: 680px">
               <p style="margin-bottom: 16px; line-height: 22px">
-                Xin chào ${name} <br />
+                Xin chào ${name}! <br />
               </p>
               <p style="margin-bottom: 16px; line-height: 22px">
                 Bạn đã tạo thành công tài khoản sử dụng phầm mềm!<br />
