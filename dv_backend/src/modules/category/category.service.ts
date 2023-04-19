@@ -18,8 +18,18 @@ export class CategoryService {
     return this.categoryRepository.findOne({ where: { id: id } });
   }
 
+  async findByName(nameCate: string): Promise<Category> {
+    return this.categoryRepository.findOne({ where: { name: nameCate } });
+  }
+
   async create(category: Category): Promise<Category> {
-    return this.categoryRepository.save(category);
+    const categoryNew = new Category();
+    categoryNew.name = category.name
+    categoryNew.active_flg = 1
+    categoryNew.create_date = new Date()
+    categoryNew.status = 1
+    categoryNew.update_date = new Date()
+    return this.categoryRepository.save(categoryNew);
   }
 
   async update(id: number, category: Category): Promise<Category> {
@@ -27,8 +37,14 @@ export class CategoryService {
     return this.categoryRepository.findOne({ where: { id: id } });
   }
 
-  async delete(id: number): Promise<void> {
-    await this.categoryRepository.delete(id);
+  async delete(id: number, category: Category): Promise<void> {
+    const categoryNew = new Category();
+    categoryNew.name = category.name
+    categoryNew.active_flg = 0
+    categoryNew.create_date = category.create_date
+    categoryNew.status = category.status
+    categoryNew.update_date = new Date()
+    await this.categoryRepository.update(id, category);
   }
 
   async findAllWithProducts(): Promise<Category[]> {

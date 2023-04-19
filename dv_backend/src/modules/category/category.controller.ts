@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { Category } from '../../models/category.entity';
 import { CategoryService } from './category.service';
@@ -9,7 +9,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 
   @Get()
-  @ApiOkResponse({ description: 'Category retrieved successfully.'})
+  @ApiOkResponse({ description: 'Category retrieved successfully.' })
   findAll(): Promise<Category[]> {
     return this.categoryService.findAll();
   }
@@ -30,7 +30,11 @@ export class CategoryController {
   @Post()
   @ApiCreatedResponse({ description: 'Category created successfully.' })
   @ApiUnprocessableEntityResponse({ description: 'Category title already exists.' })
-  create(@Body() category: Category): Promise<Category> {
+  async create(@Body() category: Category): Promise<Category> {
+    const oldName = await this.categoryService.findByName(category.name);
+    if (oldName) {
+      throw new HttpException('Tên danh mục đã tồn tại!', HttpStatus.BAD_REQUEST);
+    }
     return this.categoryService.create(category);
   }
 
@@ -46,7 +50,8 @@ export class CategoryController {
   @Delete(':id')
   @ApiOkResponse({ description: 'Category deleted successfully.' })
   @ApiNotFoundResponse({ description: 'Category not found.' })
-  delete(@Param('id') id: string): Promise<void> {
-    return this.categoryService.delete(+id);
+  async delete(@Param('id') id: number): Promise<void> {
+    const category = await this.categoryService.findOne(id);
+    return this.categoryService.delete(+id, category);
   }
 }
