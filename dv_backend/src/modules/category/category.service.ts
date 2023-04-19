@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../../models/category.entity';
 
 @Injectable()
 export class CategoryService {
+  logger: any;
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
@@ -44,13 +45,15 @@ export class CategoryService {
     categoryNew.create_date = category.create_date
     categoryNew.status = category.status
     categoryNew.update_date = new Date()
-    await this.categoryRepository.update(id, category);
+    await this.categoryRepository.update(id, categoryNew);
+    throw new HttpException('Xóa thuốc thành công', HttpStatus.OK);
   }
 
   async findAllWithProducts(): Promise<Category[]> {
     const queryBuilder = this.categoryRepository.createQueryBuilder('category')
       .leftJoinAndSelect('category.products', 'product')
     const categories = await queryBuilder.getMany();
-    return categories;
+    const cateNew = categories.filter(item => item.active_flg !== 0)
+    return cateNew;
   }
 }
