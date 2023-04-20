@@ -16,6 +16,8 @@ import CheckInvCreateNew from './view/Admin/CheckInvCreateNew';
 import Product from './view/Admin/Product';
 import Provider from './view/Admin/Provider';
 import Revenue from './view/Admin/Revenue';
+import SignIn from './view/Admin/Login/SignIn';
+import SignUp from './view/Admin/Login/SignUp';
 function App() {
   return (
     <Routes>
@@ -36,6 +38,8 @@ function App() {
         <Route path='invoice/new' element={<InvoiceCreateNew />} />
         <Route path='check/new' element={<CheckInvCreateNew />} />
       </Route>
+      <Route path='sign-in' element={<SignIn />} />
+      <Route path='sign-up' element={<SignUp />} />
     </Routes>
   );
 }
