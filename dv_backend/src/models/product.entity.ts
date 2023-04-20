@@ -23,6 +23,9 @@ export class Product {
   weight: string;
 
   @Column()
+  unit: string;
+
+  @Column()
   description: string;
 
   @ManyToOne(() => Category, (category) => category.products)

@@ -15,7 +15,7 @@ export class ProductService {
   ) { }
 
   async createProduct(productDto: ProductDto): Promise<Product> {
-    const { name, price, image, size, weight, description, categoryId } = productDto;
+    const { name, price, image, size, weight, description, categoryId, unit } = productDto;
     const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
     const product = new Product();
     product.name = name;
@@ -23,6 +23,7 @@ export class ProductService {
     product.image = image;
     product.size = size;
     product.weight = weight;
+    product.unit = unit;
     product.description = description;
     product.category = category;
 

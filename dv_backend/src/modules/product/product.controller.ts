@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Product } from '../../models/product.entity';
 import { ProductDto } from '../../dto/product.dto';
 import { ApiTags } from '@nestjs/swagger';
