@@ -1,21 +1,44 @@
-import { DeleteOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Popconfirm, Table } from 'antd'
+import { DeleteOutlined, PlusCircleOutlined, SearchOutlined, FileSearchOutlined } from '@ant-design/icons'
+import { Button, Input, notification, Popconfirm, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CustomerType } from '../../../dataType/custormer';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import api from '../../../api';
+import { CustomerResponse } from '../../../dataType/custormer';
+import { DateUtils } from '../../../Ultils/DateFormat';
 import ModalCustomerDetail from './ModalCustomerDetail';
 export default function Product() {
-  const navigate = useNavigate()
   const [loadingTable, setloadingTable] = useState(false)
   const [customerName, setCustomerName] = useState('')
   const [showModalAddCustomer, setShowModalAddCustomer] = useState(false)
   const [showModalDetailCustomer, setShowModalDetailCustomer] = useState(false)
-  const handleRemoveCustomer = (e: any, record: CustomerType) => {
-    e.stopPropagation()
-    console.log(record, 'keytest')
+  const [listCustomer, setListCustomer] = useState<CustomerResponse[]>([])
+
+  useEffect(() => {
+    getAllCustomer()
+  }, [])
+
+  const getAllCustomer = async () => {
+    setloadingTable(true)
+    try {
+      const res = await api.customer.getAllCustomer()
+      setListCustomer(res.data)
+    } catch (err) {
+      notification.error({
+        message:"Thông báo",
+        description:"Không thể lấy danh sách khách hàng"
+      })
+    }
+    finally {
+      setloadingTable(false)
+    }
   }
-  const _renderButtonDelete = (text: any, record: CustomerType, index: number) => {
+
+  const handleRemoveCustomer = (e: any, record: CustomerResponse) => {
+
+  }
+
+  const _renderButtonDelete = (text: any, record: CustomerResponse, index: number) => {
     return (
       <Popconfirm
         title="Bạn có chắc chắn xóa khách hàng?"
@@ -28,61 +51,81 @@ export default function Product() {
       </Popconfirm>
     )
   }
-  const columns: ColumnsType<CustomerType> = [
+
+  const _renderDetail = (text: any, record: CustomerResponse, index: number) => {
+    return (
+      <FileSearchOutlined onClick={() => handleOnRowTable(record)} />
+    )
+  }
+
+  const columns: ColumnsType<CustomerResponse> = [
     {
       title: 'STT',
       dataIndex: 'stt',
       key: 'stt',
-      render: (text: any, record: CustomerType, index: number) => <a>{index + 1}</a>,
+      render: (text: any, record: CustomerResponse, index: number) => <a>{index + 1}</a>,
     },
     {
       title: 'Mã khách hàng',
-      dataIndex: 'customer_cd',
-      key: 'customer_cd',
+      dataIndex: 'id',
+      key: 'id',
       render: text => <a>{text}</a>,
     },
     {
       title: 'Tên khách hàng',
-      dataIndex: 'customer_name',
-      key: 'customer_name',
+      dataIndex: 'name',
+      key: 'name',
       render: text => <a>{text}</a>,
     },
     {
       title: 'Địa chỉ',
-      dataIndex: 'customer_address',
-      key: 'customer_address',
+      dataIndex: 'address',
+      key: 'address',
       render: text => <a>{text}</a>,
     },
     {
       title: 'Số điện thoại',
-      dataIndex: 'customer_phone',
-      key: 'customer_phone',
+      dataIndex: 'phone_no',
+      key: 'phone_no',
       render: text => <a>{text}</a>,
     },
     {
-      title: 'Tổng nợ',
-      dataIndex: 'amount_debt',
-      key: 'amount_debt',
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
       render: text => <a>{text}</a>,
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'create_date',
+      key: 'create_date',
+      render: text => <a>{moment(text).format(DateUtils.DATE_TIME)}</a>,
+    },
+    {
+      title: 'Chi tiết',
+      dataIndex: 'detail',
+      key: 'detail',
+      align: 'center',
+      render: _renderDetail,
     },
     {
       title: 'Xóa',
       dataIndex: 'delete',
       key: 'delete',
+      align: 'center',
       render: _renderButtonDelete,
     },
 
   ];
-  const handleOnRowTable = (record: CustomerType) => {
-    
+
+  const handleOnRowTable = (record: CustomerResponse) => {
+    setShowModalDetailCustomer(true)
   }
+
   const onchangeNameSearch = (e: any) => {
     setCustomerName(e.target.value)
-    console.log(e.target.value, 'name')
   }
-  const handleAddCategory = () => {
-    console.log('Add danh muc moi')
-  }
+
   const _renderHeaderCustomer = () => {
     return (
       <div className='header-category'>
@@ -104,19 +147,15 @@ export default function Product() {
       </div>
     )
   }
+
   const _renderTableCustomer = () => {
     return (
       <div className='list-category-container'>
         <Table
           rowKey={'table-category'}
           columns={columns}
-          dataSource={[]}
+          dataSource={listCustomer}
           loading={loadingTable}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: event => { handleOnRowTable(record) },
-            };
-          }}
         />
       </div>
     )

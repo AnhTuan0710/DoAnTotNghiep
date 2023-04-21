@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from '../../models/order.entity';
-import { CreateOrderDto } from '../../dto/order.dto';
+import { CreateOrderDto, UpdateOrderDto } from '../../dto/order.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('orders')
@@ -25,7 +25,7 @@ export class OrderController {
   }
 
   @Put(':id')
-  async updateOrder(@Param('id') id: number, @Body() order: Order): Promise<Order> {
+  async updateOrder(@Param('id') id: number, @Body() order: UpdateOrderDto): Promise<Order> {
     return await this.orderService.updateOrder(id, order);
   }
 
@@ -36,6 +36,6 @@ export class OrderController {
 
   @Get('user/:id')
   async getOrderByUser(@Param('id') id: number): Promise<Order[]> {
-    return await this.orderService.getOrderByUser(id);
+    return await this.orderService.findByUserId(id);
   }
 }

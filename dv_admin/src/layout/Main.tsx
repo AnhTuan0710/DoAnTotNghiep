@@ -47,7 +47,7 @@ function Main() {
           <Outlet></Outlet>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          @Copyright by KIT - Phần mềm quản lý cửa hàng kim khí Long Anh - Version 1.0.0
+          @Copyright by KIT - Phần mềm quản lý cửa hàng kim khí Duc Viet - Version 1.0.0
         </Footer>
       </Layout>
     </Layout>

@@ -1,209 +1,129 @@
-import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Table, Tag } from 'antd'
+import { PlusCircleOutlined, SearchOutlined, FileSearchOutlined } from '@ant-design/icons'
+import { Button, Input, notification, Popconfirm, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
-import { useState } from 'react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { InvoiceType } from '../../../dataType/invoice';
+import api from '../../../api';
+import { InvoiceRespose } from '../../../dataType/invoice';
+import { DateUtils } from '../../../Ultils/DateFormat';
 import { MoneyFormat } from '../../../Ultils/MoneyFormat';
 import ModalInvoiceDetail from './ModalInvoiceDetail';
+import { DeleteOutlined } from '@ant-design/icons';
 export default function Invoice() {
   const navigate = useNavigate()
   const [loadingTable, setloadingTable] = useState(false)
   const [invoiceCd, setInvoiceCd] = useState('')
   const [modalDetailInvoice, setModalDetailInvoice] = useState(false)
-  const [invoiceInfoDetail, setInvoiceInfoDetail] = useState<InvoiceType>()
-  const listImport: InvoiceType[] = [
-    {
-      invoice_cd: 'IV00001',
-      customer_cd: 'CU00001',
-      total_amount: 1000000,
-      total_paid: 800000,
-      total_debt: 200000,
-      status: 1,
-      product: [
-        {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        }
-      ]
-    },
-    {
-      invoice_cd: 'IV00002',
-      customer_cd: 'CU00002',
-      total_amount: 5000000,
-      total_paid: 5000000,
-      total_debt: 0,
-      status: 1,
-      product: [
-        {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        }, {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        }, {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        }
-        , {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        }, {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        }
-      ]
-    },
-    {
-      invoice_cd: 'IV00003',
-      customer_cd: 'CU00003',
-      total_amount: 400000,
-      total_paid: 400000,
-      total_debt: 0,
-      status: 0,
-      product: [
-        {
-          product_cd: 'SP0001',
-          product_name: 'San pham 1',
-          price: 100000,
-          quanlity: 3
-        },
-        {
-          product_cd: 'SP0002',
-          product_name: 'San pham 2',
-          price: 40000,
-          quanlity: 3
-        }
-      ]
+  const [invoiceInfoDetail, setInvoiceInfoDetail] = useState<InvoiceRespose>()
+
+  const [listInvoice, setListInvoice] = useState<InvoiceRespose[]>([])
+  useEffect(() => {
+    getAllInvoice()
+  }, [])
+  
+  const getAllInvoice = async () => {
+    setloadingTable(true)
+    try {
+      const res = await api.invoice.getAllInvoice()
+      setListInvoice(res.data)
     }
-  ]
-  const _renderStatusImport = (text: number, record: InvoiceType, index: number) => {
+    catch (err) {
+      notification.error({
+        message: "Thông báo",
+        description: 'Không thể lấy danh sách hóa đơn'
+      })
+    }
+    finally {
+      setloadingTable(false)
+    }
+  }
+
+  const _renderStatus = (text: number, record: InvoiceRespose, index: number) => {
     return (
       <Tag color={text ? 'green' : 'red'}>{text ? 'Đã hoàn thành' : 'Đã hủy'}</Tag>
     )
   }
-  const columns: ColumnsType<InvoiceType> = [
+
+  const _renderNameCustomer = (text: number, record: InvoiceRespose, index: number) => {
+    return (
+      <h5>{record.user.name}</h5>
+    )
+  }
+
+  const confirm = async (id: number) => {
+    try {
+      await api.invoice.deleteInvoice(id)
+      notification.success({
+        message: "Thông báo",
+        description: 'Xóa hóa đơn thành công!'
+      })
+      getAllInvoice()
+    } catch (err) {
+      notification.error({
+        message: "Thông báo",
+        description: 'Xóa hóa đơn thất bại!'
+      })
+    }
+  }
+
+  const _renderRemove = (text: number, record: InvoiceRespose, index: number) => {
+    return (
+      <Popconfirm
+        placement="top"
+        title={'Bạn có chắc chắn xóa hóa đơn!'}
+        description={''}
+        onConfirm={() => confirm(record.id)}
+        okText="Yes"
+        cancelText="No"
+      >
+        <DeleteOutlined />
+      </Popconfirm>
+    )
+  }
+
+  const _renderDetail = (text: number, record: InvoiceRespose, index: number) => {
+    return (
+      <FileSearchOutlined onClick={() => handleOnRowTable(record)} />
+    )
+  }
+
+  const _renderIDCustomer = (text: number, record: InvoiceRespose, index: number) => {
+    return (
+      <h5>{record.user.id}</h5>
+    )
+  }
+
+  const columns: ColumnsType<InvoiceRespose> = [
     {
       title: 'STT',
       dataIndex: 'stt',
       key: 'stt',
       width: 20,
-      render: (text: any, record: InvoiceType, index: number) => <a>{index + 1}</a>,
+      render: (text: any, record: InvoiceRespose, index: number) => <a>{index + 1}</a>,
     },
     {
       title: 'Mã hóa đơn',
-      dataIndex: 'invoice_cd',
-      key: 'invoice_cd',
+      dataIndex: 'id',
+      key: 'id',
       render: text => <a>{text}</a>,
     },
     {
       title: 'Mã khách hàng',
-      dataIndex: 'customer_cd',
-      key: 'customer_cd',
-      render: text => <a>{text}</a>,
+      dataIndex: 'user',
+      key: 'user',
+      render: _renderIDCustomer,
+    },
+    {
+      title: 'Tên khách hàng',
+      dataIndex: 'user',
+      key: 'user',
+      render: _renderNameCustomer,
     },
     {
       title: 'Tổng hóa đơn',
-      dataIndex: 'total_amount',
-      key: 'total_amount',
-      align: 'right',
-      render: text => <a>{MoneyFormat(text)}</a>,
-    },
-    {
-      title: 'Tổng trả',
-      dataIndex: 'total_paid',
-      key: 'total_paid',
-      align: 'right',
-      render: text => <a>{MoneyFormat(text)}</a>,
-    },
-    {
-      title: 'Tổng nợ',
-      dataIndex: 'total_debt',
-      key: 'total_debt',
+      dataIndex: 'totalAmount',
+      key: 'totalAmount',
       align: 'right',
       render: text => <a>{MoneyFormat(text)}</a>,
     },
@@ -212,10 +132,31 @@ export default function Invoice() {
       dataIndex: 'status',
       key: 'status',
       align: 'center',
-      render: _renderStatusImport,
+      render: _renderStatus,
+    },
+    {
+      title: 'Ngày bán',
+      dataIndex: 'create_date',
+      key: 'create_date',
+      align: 'center',
+      render: text => <a>{moment(text).format(DateUtils.DATE_TIME)}</a>,
+    },
+    {
+      title: 'Chi tiết',
+      dataIndex: 'detail',
+      key: 'detail',
+      align: 'center',
+      render: _renderDetail,
+    },
+    {
+      title: 'Xóa',
+      dataIndex: 'delete',
+      key: 'delete',
+      align: 'center',
+      render: _renderRemove,
     },
   ];
-  const handleOnRowTable = (record: InvoiceType) => {
+  const handleOnRowTable = (record: InvoiceRespose) => {
     setInvoiceInfoDetail(record)
     setModalDetailInvoice(true)
   }
@@ -253,13 +194,8 @@ export default function Invoice() {
         <Table
           rowKey={'table-category'}
           columns={columns}
-          dataSource={listImport}
+          dataSource={listInvoice}
           loading={loadingTable}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: event => { handleOnRowTable(record) },
-            };
-          }}
         />
       </div>
     )
@@ -273,7 +209,8 @@ export default function Invoice() {
           onCancel={() => setModalDetailInvoice(false)}
           onOk={() => { }}
           invoiceInfo={invoiceInfoDetail}
-        />}
+        />
+      }
     </div>
   )
 }

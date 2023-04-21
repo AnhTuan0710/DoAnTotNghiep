@@ -2,14 +2,15 @@ export class CreateOrderDto {
   orderNumber: string;
   totalAmount: number;
   userId: number;
-  productIds: number[];
+  productIds: ProductOrderDto[];
 }
 
 export class UpdateOrderDto {
   orderNumber?: string;
   totalAmount?: number;
   userId?: number;
-  productIds?: number[];
+  productIds?: ProductOrderDto[];
+  status: number;
 }
 
 export class OrderCreateNewDto {
@@ -22,5 +23,5 @@ export class OrderCreateNewDto {
 
 export class ProductOrderDto {
   id: number;
-  count: number;
+  quantity: number;
 }
