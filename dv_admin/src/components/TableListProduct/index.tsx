@@ -1,18 +1,18 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import { Popconfirm } from 'antd';
+import { Popconfirm, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { ProductType } from '../../dataType/product';
+import { ProductResponse, ProductType } from '../../dataType/product';
 type Props = {
   loadingTable: boolean;
-  listProduct: ProductType[],
-  onrowTable?: (record: ProductType) => void
+  listProduct: ProductResponse[],
+  onrowTable?: (record: ProductResponse) => void
 }
 export default function TableListProduct(props: Props) {
   const { loadingTable, listProduct, onrowTable } = props
-  const handleDeleteProduct = (e: any, record: ProductType) => {
+  const handleDeleteProduct = (e: any, record: ProductResponse) => {
     e.stopPropagation()
   }
-  const _renderButtonDelete = (text: any, record: ProductType, index: number) => {
+  const _renderButtonDelete = (text: any, record: ProductResponse, index: number) => {
     return (
       <Popconfirm
         title="Bạn có chắc chắn xóa sản phẩm?"
@@ -25,69 +25,83 @@ export default function TableListProduct(props: Props) {
       </Popconfirm>
     )
   }
-  const columns: ColumnsType<ProductType> = [
+
+  const renderStatus= (text: any, record: ProductResponse, index: number) => {
+    return (
+      <Tag color={text? 'green' : 'red'}>{text? 'Đang kinh doanh': 'Ngừng kinh doanh'}</Tag>
+    )
+  }
+
+  const renderCategory = (text: any, record: ProductResponse, index: number) => {
+    return (
+      <h5>{record.category.name}</h5>
+    )
+  }
+
+  const columns: ColumnsType<ProductResponse> = [
     {
       title: 'STT',
       dataIndex: 'stt',
       key: 'stt',
-      render: (text: any, record: ProductType, index: number) => <a>{index + 1}</a>,
-    },
-    {
-      title: 'Hình ảnh',
-      dataIndex: 'image',
-      key: 'image',
-      render: text => <a>{text}</a>,
-    },
-    {
-      title: 'Mã sản phẩm',
-      dataIndex: 'product_cd',
-      key: 'product_cd',
-      render: text => <a>{text}</a>,
+      render: (text: any, record: ProductResponse, index: number) => <a>{index + 1}</a>,
+      width: 5,
     },
     {
       title: 'Tên sản phẩm',
-      dataIndex: 'product_name',
-      key: 'product_name',
-    },
-    {
-      title: 'Giá bán',
-      dataIndex: 'price',
-      key: 'price',
-      render: (text: ProductType[]) => <div>{text.length}</div>,
-    },
-    {
-      title: 'Giá nhập',
-      dataIndex: 'price_import',
-      key: 'price_import',
-      render: (text: ProductType[]) => <div>{text.length}</div>,
+      dataIndex: 'name',
+      key: 'name',
+      width: 70,
     },
     {
       title: 'Đơn vị',
       dataIndex: 'unit',
       key: 'unit',
-      render: (text: ProductType[]) => <div>{text.length}</div>,
+      width: 20,
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'amount',
-      key: 'amount',
-      render: (text: ProductType[]) => <div>{text.length}</div>,
+      title: 'Khối lượng',
+      dataIndex: 'weight',
+      key: 'weight',
+      width: 20,
     },
     {
-      title: 'Mã danh mục',
-      dataIndex: 'category_cd',
-      key: 'category_cd',
-      render: (text: ProductType[]) => <div>{text.length}</div>,
+      title: 'Kích thước',
+      dataIndex: 'size',
+      key: 'name',
+      width: 20,
+    },
+    {
+      title: 'Loại',
+      dataIndex: 'category',
+      key: 'category',
+      render: renderCategory,
+      width: 20,
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: renderStatus,
+      width: 20,
+    },
+    {
+      title: 'Giá bán',
+      dataIndex: 'price',
+      key: 'price',
+      align:"right",
+      render: (text) => <div>{text}</div>,
+      width: 20,
     },
     {
       title: 'Xóa',
       dataIndex: 'delete',
       key: 'delete',
       render: _renderButtonDelete,
+      width: 10,
     },
 
   ];
-  const handleOnRowTable = (record: ProductType) => {
+  const handleOnRowTable = (record: ProductResponse) => {
     onrowTable && onrowTable(record)
   }
   return (

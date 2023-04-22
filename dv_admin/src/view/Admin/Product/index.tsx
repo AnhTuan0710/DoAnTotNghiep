@@ -2,20 +2,41 @@ import { DeleteOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/
 import { Button, Input, Popconfirm } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import { CategoryType } from '../../../dataType/category';
-import { ProductType } from '../../../dataType/product';
-import { useState } from 'react';
+import { ProductResponse, ProductType } from '../../../dataType/product';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TableListProduct from '../../../components/TableListProduct';
 import ModalProductDetail from './ModalProductDetail';
+import api from '../../../api';
+import './product.scss'
+
 export default function Customer() {
   const navigate = useNavigate()
   const [loadingTable, setloadingTable] = useState(false)
   const [productName, setProductName] = useState('')
   const [showModalAddProduct, setShowModalAddProduct] = useState(false)
   const [showModalDetailProduct, setShowModalDetailProduct] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [listProduct, setListProduct] = useState<ProductResponse[]>([])
   const handleRemoveProduct = (e: any, record: CategoryType) => {
     e.stopPropagation()
     console.log(record, 'keytest')
+  }
+  
+  useEffect(() => {
+    getAllProduct()
+  }, [])
+
+  const getAllProduct =async () => {
+    setLoading(true)
+    try {
+      const res = await api.product.getAllProduct()
+      console.log(res, 'keytest')
+      setListProduct(res.data)
+    } catch (err) { }
+    finally {
+      setLoading(false)
+    }
   }
   const _renderButtonDelete = (text: any, record: CategoryType, index: number) => {
     return (
@@ -65,7 +86,7 @@ export default function Customer() {
     return (
       <div className='list-category-container'>
         <TableListProduct
-          listProduct={[]}
+          listProduct={listProduct}
           loadingTable={false}
           onrowTable={() => { }}
         />

@@ -1,42 +1,25 @@
 @import "../../../App.scss";
 
 .category-container {
-  .header-category {
-    margin: 0px 10px;
+  .header-container {
     display: flex;
-    flex-direction: row;
+    padding: 5px;
     align-items: center;
-    justify-content: space-between;
-    .title-category {
+    h5 {
+      font-weight: 600;
+      margin: 10px;
+    }
+    .button-add {
       display: flex;
-      flex-direction: row;
       align-items: center;
+      background-color: rgb(249, 93, 41);
     }
   }
-  .list-category-container {
-    margin-top: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    padding-top: 10px;
-  }
-}
-.category-detail-container {
-  .category_header{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    h4{
-      margin-left: 10px;
-    }
-  }
-  .category-info {
-    margin-top: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    padding: 10px;
-    .button-edit-container {
-      display: flex;
-      justify-content: flex-end;
+  .search-container {
+    text-align: right;
+    margin-right: 10px;
+    .input {
+      max-width: 300px;
     }
   }
 }
