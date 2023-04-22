@@ -123,7 +123,7 @@ export default class SignUp extends Component {
       return (
         <Header>
           <div className="header-col header-brand">
-            <h5>LongAnh Tools</h5>
+            <h5>DucViet Admin</h5>
           </div>
           <div className="header-col header-nav">
             <Menu mode="horizontal" defaultSelectedKeys={["1"]}>

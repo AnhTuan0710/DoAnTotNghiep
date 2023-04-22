@@ -38,7 +38,7 @@ function Sidenav() {
     <>
       <div className="brand">
         <img src={LOGO} alt="" />
-        <span>LongAnh Tools</span>
+        <span>DucViet Admin</span>
       </div>
       <hr />
       <Menu theme="light" mode="inline">

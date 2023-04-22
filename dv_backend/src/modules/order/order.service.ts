@@ -1,3 +1,4 @@
+import { OrderDetail } from './../../models/orderDetail';
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from "../../models/order.entity";
@@ -15,24 +16,41 @@ export class OrderService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(OrderDetail)
+    private readonly orderDetailRepository: Repository<OrderDetail>,
   ) { }
 
   async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
-    const order = new Order();
-    order.orderNumber = createOrderDto.orderNumber;
-    order.totalAmount = createOrderDto.totalAmount;
-
-    const user = await this.userRepository.findOne({ where: { id: createOrderDto.userId } });
-    order.user = user;
-
-    const products = await this.productRepository.findByIds(createOrderDto.productIds);
+    const { userId, productIds } = createOrderDto;
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const order = await this.orderRepository.create({ user });
+    order.totalAmount = createOrderDto.totalAmount,
+      order.orderNumber = createOrderDto.orderNumber,
+      order.create_date = new Date()
+    order.update_date = new Date()
+    await this.orderRepository.save(order);
+    const orderDetails: OrderDetail[] = [];
+    for (const product of productIds) {
+      const { id, quantity } = product;
+      const orderDetail = await this.orderDetailRepository.create({
+        orderId: order.id,
+        productId: id,
+        quantity,
+      });
+      await this.orderDetailRepository.save(orderDetail);
+      orderDetails.push(orderDetail);
+    }
+    order.orderDetails = orderDetails;
+    const ids = createOrderDto.productIds.map(item => { return item.id })
+    const products = await this.productRepository.findByIds(ids);
     order.products = products;
-
-    return this.orderRepository.save(order);
+    await this.orderRepository.save(order);
+    return order;
   }
 
   async getAllOrders(): Promise<Order[]> {
-    return this.orderRepository.find({ relations: ['user', 'products'] });
+    return this.orderRepository.find({ where: { active_flg: 1 }, relations: ['user', 'products', 'orderDetails'] });
   }
 
   async getOrderById(id: number): Promise<Order> {
@@ -56,19 +74,41 @@ export class OrderService {
     }
 
     if (updateOrderDto.productIds) {
-      const products = await this.productRepository.findByIds(updateOrderDto.productIds);
+      const productUpdate = updateOrderDto.productIds
+      const listOrderDetail = await this.orderDetailRepository.find({ where: { orderId: id } })
+      listOrderDetail.forEach(async (item: OrderDetail) => {
+        await this.orderDetailRepository.delete(item.id)
+      })
+      for (const product of productUpdate) {
+        const { id, quantity } = product;
+        const orderDetail = await this.orderDetailRepository.create({
+          orderId: order.id,
+          productId: id,
+          quantity,
+        });
+        await this.orderDetailRepository.save(orderDetail);
+      }
+      const ids = updateOrderDto.productIds.map(item => { return item.id })
+      const products = await this.productRepository.findByIds(ids);
       order.products = products;
     }
 
+    if (updateOrderDto.status) {
+      order.status = updateOrderDto.status;
+    }
+
+    order.update_date = new Date()
     return this.orderRepository.save(order);
   }
 
   async deleteOrder(id: number): Promise<void> {
-    await this.orderRepository.delete(id);
+    const order = await this.orderRepository.findOne({ where: { id: id } })
+    order.active_flg = 0
+    await this.orderRepository.update(id, order);
   }
 
-  async getOrderByUser(id: number): Promise<Order[]> {
-    const user = await this.userRepository.findOne({ where: { id: id } });
-    return this.orderRepository.find({ where: { user: user }, relations: ['user', 'products'] });
+  async findByUserId(userId: number): Promise<Order[]> {
+    const user = await this.userRepository.findOne({ where: { id: userId, active_flg: 1 } });
+    return this.orderRepository.find({ where: { user: user }, relations: ['user', 'products', 'orderDetails'] });
   }
 }

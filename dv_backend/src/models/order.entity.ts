@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { OrderDetail } from './orderDetail';
 import { Product } from './product.entity';
 import { User } from './user.entity';
 
@@ -29,6 +30,9 @@ export class Order {
   @Column({ default: 1 })
   active_flg?: number;
 
-  @Column({ default: 1 })
+  @Column({ default: 2 })
   status?: number;
+
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
+  orderDetails: OrderDetail[];
 }

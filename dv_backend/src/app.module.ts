@@ -1,3 +1,5 @@
+import { OrderDetailModule } from './modules/orderDetail/orderDetail.module';
+import { OrderDetail } from './models/orderDetail';
 import { CategoriesModule } from './modules/category/category.module';
 import { Category } from './models/category.entity';
 import { Module } from '@nestjs/common';
@@ -22,7 +24,7 @@ import { OrdersModule } from './modules/order/order.module';
       username: DATABASE.USER_NAME,
       password: DATABASE.PASSWORD,
       database: DATABASE.DATABASE,
-      entities: [User, Product, Category, Order],
+      entities: [User, Product, Category, Order, OrderDetail],
       synchronize: true,
     }),
     AuthModule,
@@ -30,6 +32,7 @@ import { OrdersModule } from './modules/order/order.module';
     ProductsModule,
     CategoriesModule,
     OrdersModule,
+    OrderDetailModule,
   ],
   controllers: [
     AppController

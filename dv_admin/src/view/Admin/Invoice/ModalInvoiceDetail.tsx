@@ -1,16 +1,16 @@
 import { Col, Modal, Row, Table, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { ProductInvoice } from "../../../dataType/invoice";
-import { InvoiceType } from "../../../dataType/invoice";
+import { InvoiceRespose, ProductInvoice } from "../../../dataType/invoice";
 import { MoneyFormat } from "../../../Ultils/MoneyFormat";
 import './modal-invoice-detail.scss'
 type Props = {
   onOk: () => void,
   onCancel: () => void
-  invoiceInfo: InvoiceType
+  invoiceInfo: InvoiceRespose
 }
 export default function ModalInvoiceDetail(props: Props) {
   const { onOk, onCancel, invoiceInfo } = props
+  const listDetailInvoice = invoiceInfo.orderDetails
   const _renderInvoiceInfoItem = (title: string, value: string) => {
     return (
       <Col xs={24} md={12}>
@@ -21,12 +21,21 @@ export default function ModalInvoiceDetail(props: Props) {
       </Col>
     )
   }
-  const _renderTotalMoney = (text: number, record: ProductInvoice, index: number) => {
+  const _renderTotalMoney = (text: number, record: any, index: number) => {
+    const product = listDetailInvoice.find(item => item.productId = record.id)
     return (
-      <>{MoneyFormat(record.price * record.quanlity)}</>
+      <>{product ? MoneyFormat(record.price * product.quantity) : 0}</>
     )
   }
-  const columns: ColumnsType<ProductInvoice> = [
+
+  const _renderQuantityProduct = (text: number, record: any, index: number) => {
+    const product = listDetailInvoice.find(item => item.productId = record.id)
+    return (
+      <p>{product ? product.quantity : 0}</p>
+    )
+  }
+
+  const columns: ColumnsType<any> = [
     {
       title: 'STT',
       dataIndex: 'stt',
@@ -36,15 +45,22 @@ export default function ModalInvoiceDetail(props: Props) {
     },
     {
       title: 'Mã sản phẩm',
-      dataIndex: 'product_cd',
-      key: 'product_cd',
+      dataIndex: 'id',
+      key: 'id',
       render: text => <p>{text}</p>,
     },
     {
       title: 'Tên sản phẩm',
-      dataIndex: 'product_name',
-      key: 'product_name',
+      dataIndex: 'name',
+      key: 'name',
       render: text => <p>{text}</p>,
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: _renderQuantityProduct,
+      align: 'center'
     },
     {
       title: 'Giá bán',
@@ -54,18 +70,11 @@ export default function ModalInvoiceDetail(props: Props) {
       render: text => <p>{MoneyFormat(text)}</p>,
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'quanlity',
-      key: 'quanlity',
+      title: 'Thành tiền',
+      dataIndex: 'total',
+      key: 'total',
       align: 'right',
-      render: text => <p>{text}</p>,
-    },
-    {
-      title: 'Tổng tiền',
-      dataIndex: 'total_debt',
-      key: 'total_debt',
-      align: 'right',
-      render: _renderTotalMoney,
+      render: _renderTotalMoney
     },
   ];
   const _renderInvoiceInfoItemNumber = (title: string, value: number) => {
@@ -78,7 +87,7 @@ export default function ModalInvoiceDetail(props: Props) {
       </Col>
     )
   }
-  const _renderStatusImport = () => {
+  const _renderStatus = () => {
     return (
       <Col xs={24} md={12}>
         <div className="import-detail-info-item">
@@ -96,7 +105,7 @@ export default function ModalInvoiceDetail(props: Props) {
       <Table
         rowKey={'table-category'}
         columns={columns}
-        dataSource={invoiceInfo.product}
+        dataSource={invoiceInfo.products}
         loading={false}
         onRow={(record, rowIndex) => {
           return {
@@ -115,12 +124,11 @@ export default function ModalInvoiceDetail(props: Props) {
       width={800}
     >
       <Row gutter={[16, 8]}>
-        {_renderInvoiceInfoItem('Mã phiếu nhập', invoiceInfo.invoice_cd)}
-        {_renderInvoiceInfoItemNumber('Tổng nhập', invoiceInfo.total_amount)}
-        {_renderInvoiceInfoItem('Mã nhà cung cấp', invoiceInfo.customer_cd)}
-        {_renderInvoiceInfoItemNumber('Tổng trả', invoiceInfo.total_paid)}
-        {_renderStatusImport()}
-        {_renderInvoiceInfoItemNumber('Còn nợ', invoiceInfo.total_debt)}
+        {_renderInvoiceInfoItem('Mã hóa đơn', invoiceInfo.orderNumber)}
+        {_renderInvoiceInfoItemNumber('Tổng đơn hàng', invoiceInfo.totalAmount)}
+        {_renderInvoiceInfoItem('Mã khách hàng', invoiceInfo.user.id)}
+        {_renderInvoiceInfoItemNumber('Tên khách hàng', invoiceInfo.user.name)}
+        {_renderStatus()}
       </Row>
       <div className="mt-3">
         {_renderTableProductImport()}

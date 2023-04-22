@@ -1,3 +1,4 @@
+import { OrderDetailModule } from './../orderDetail/orderDetail.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from '../../models/order.entity';
@@ -7,7 +8,7 @@ import { UsersModule } from '../user/user.module';
 import { ProductsModule } from '../product/product.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order]), UsersModule, ProductsModule],
+  imports: [TypeOrmModule.forFeature([Order]), UsersModule, ProductsModule, OrderDetailModule],
   controllers: [OrderController],
   providers: [OrderService],
   exports: [OrderService, TypeOrmModule],
