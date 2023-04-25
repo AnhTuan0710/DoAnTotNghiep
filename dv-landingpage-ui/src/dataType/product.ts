@@ -1,0 +1,17 @@
+import { CategoryResponse } from "./category";
+
+export interface ProductResponse {
+  active_flg: number,
+  category: CategoryResponse,
+  create_date: string,
+  description: string,
+  id: number,
+  image: string,
+  name: string,
+  price: number,
+  size: string,
+  status: number,
+  update_date: string,
+  weight: string,
+  unit: string,
+}

@@ -14,6 +14,7 @@ export default function ImportCreateNew() {
   const handleDeleteProduct = (e: any, record: ProductType) => {
     e.stopPropagation()
   }
+
   const _renderButtonDelete = (text: any, record: ProductType, index: number) => {
     return (
       <Popconfirm

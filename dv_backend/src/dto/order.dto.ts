@@ -10,7 +10,7 @@ export class UpdateOrderDto {
   totalAmount?: number;
   userId?: number;
   productIds?: ProductOrderDto[];
-  status: number;
+  status?: number;
 }
 
 export class OrderCreateNewDto {

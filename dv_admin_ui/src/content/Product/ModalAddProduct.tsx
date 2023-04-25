@@ -116,7 +116,7 @@ export default function ModalAddProduct(props: Props) {
             {_renderFormInputItem("Trọng lượng", "weight", 'Nhập trọng lượng sản phẩm!', true)}
             {_renderFormInputItem("Đơn vị", "unit", 'Nhập đơn vị sản phẩm!', true)}
             {_renderFormTextAra("Link ảnh", "image", 'Nhập hình ảnh sản phẩm!', false)}
-            {_renderFormTextAra("Mô tả", "description", 'Nhậpmô tả sản phẩm!', false)}
+            {_renderFormTextAra("Mô tả", "description", 'Nhập mô tả sản phẩm!', false)}
           </Row>
           {_renderButtonFotter()}
         </Form>

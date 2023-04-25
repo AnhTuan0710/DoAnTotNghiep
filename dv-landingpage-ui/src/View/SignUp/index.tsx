@@ -1,11 +1,32 @@
-import { Avatar, Button, Form, Input } from 'antd';
-import { Link } from 'react-router-dom';
+import { Avatar, Button, Form, Input, notification } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 import './sign-up.scss'
 import { UserOutlined } from '@ant-design/icons';
+import { RegisterParam } from '../../dataType/user';
+import api from '../../api';
+import { useState } from 'react';
 
 function SignUp() {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const onFinish = async (values: RegisterParam) => {
+    setLoading(true)
+    try {
+     const res = await api.auth.register(values)
+     console.log(res, 'keytest')
+     notification.success({
+      message: 'Thông báo',
+      description: "Đăng ký tài khoản thành công!",
+     })
+     navigate('/dashboard')
+    }catch(err) {
+      notification.error({
+        message: 'Thông báo',
+        description: "Đăng ký tài khoản thất bại!",
+       })
+    }finally {
+      setLoading(false)
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -49,7 +70,7 @@ function SignUp() {
           </Form.Item>
           <p>Bạn đã có tài khoản. <Link to='/sign-in'>Đăng nhập</Link></p>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               Đăng ký
             </Button>
           </Form.Item>

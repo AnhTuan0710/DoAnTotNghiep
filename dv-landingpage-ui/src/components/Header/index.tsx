@@ -1,12 +1,15 @@
-import { Col, Input, Menu, MenuProps, Row } from 'antd';
+import { Badge, Col, Input, Menu, MenuProps, Row } from 'antd';
 import { useState } from 'react';
 import { MailOutlined, ShopOutlined, HddOutlined, AppstoreAddOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 import './header.scss'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/reducer';
 
 export default function Header() {
   const [current, setCurrent] = useState('dashboard');
   const navigator = useNavigate()
+  const cart = useSelector((state: RootState) => state.cart)
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key)
@@ -40,7 +43,9 @@ export default function Header() {
     {
       label: 'Giỏ hàng',
       key: 'cart',
-      icon: <ShopOutlined />,
+      icon: <Badge count={cart.productIds.length} status='success'>
+        <ShopOutlined />
+      </Badge>,
     },
     {
       label: 'Tài khoản',
@@ -50,7 +55,7 @@ export default function Header() {
   ];
 
   const clickitem = (e: any) => {
-    console.log(e,'keytest')
+    console.log(e, 'keytest')
   }
 
   return (
@@ -65,7 +70,7 @@ export default function Header() {
         />
       </Col>
       <Col xs={12} md={6} className='input-search'>
-        <Input.Search className='input'onClick={clickitem} />
+        <Input.Search className='input' onClick={clickitem} />
       </Col>
       <Col xs={2} md={14}>
         <Menu

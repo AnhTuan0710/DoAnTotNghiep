@@ -1,3 +1,5 @@
+import { Product } from "../models/product.entity";
+
 export class ProductDto {
   name: string;
   price: number;
@@ -7,4 +9,9 @@ export class ProductDto {
   description?: string;
   categoryId: number;
   unit?: string;
+}
+
+export interface ProductRespose {
+  data: Product[],
+  total: number
 }

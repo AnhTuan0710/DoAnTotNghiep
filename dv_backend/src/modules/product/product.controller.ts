@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '../../models/product.entity';
-import { ProductDto } from '../../dto/product.dto';
+import { ProductDto, ProductRespose } from '../../dto/product.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 // @UseGuards(JwtAuthGuard)
@@ -11,8 +11,8 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  async findAll(): Promise<Product[]> {
-    return await this.productService.findAll();
+  async findAll(@Query('page') page: number, @Query('size') size: number): Promise<ProductRespose> {
+    return await this.productService.findAll(page, size);
   }
 
   @Get(':id')
@@ -35,8 +35,8 @@ export class ProductController {
     await this.productService.delete(id);
   }
 
-  @Get('')
-  async findAllWithCategory(@Body() category_id: number): Promise<Product[]> {
-    return await this.productService.getAllProductOfCategory(category_id);
+  @Get('category/:id')
+  async findAllWithCategory(@Param('id') id: number): Promise<Product[]> {
+    return await this.productService.getAllProductOfCategory(id);
   }
 }

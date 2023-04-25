@@ -27,7 +27,7 @@ export default function Dashboard() {
   const _renderListBranch = () => {
     return <div className='landingpage-content'>
       <h5>NHÃN HÀNG</h5>
-      <ListBranch/>
+      <ListBranch />
     </div>
   }
   return (

@@ -1,7 +1,7 @@
 import { DeleteOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Popconfirm } from 'antd'
+import { Button, Input, Pagination, Popconfirm, notification } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
-import { CategoryType } from '../../../dataType/category';
+import { CategoryResponse, CategoryType } from '../../../dataType/category';
 import { ProductResponse, ProductType } from '../../../dataType/product';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import TableListProduct from '../../../components/TableListProduct';
 import ModalProductDetail from './ModalProductDetail';
 import api from '../../../api';
 import './product.scss'
+import { LIMIT, PAGE_DEFAULT } from '../../../constants';
 
 export default function Customer() {
   const navigate = useNavigate()
@@ -18,49 +19,65 @@ export default function Customer() {
   const [showModalDetailProduct, setShowModalDetailProduct] = useState(false)
   const [loading, setLoading] = useState(false)
   const [listProduct, setListProduct] = useState<ProductResponse[]>([])
+  const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
+  const [page, setPage] = useState(PAGE_DEFAULT)
+  const [size, setSize] = useState(LIMIT)
+  const [total, setTotal] = useState(0)
+
   const handleRemoveProduct = (e: any, record: CategoryType) => {
     e.stopPropagation()
     console.log(record, 'keytest')
   }
-  
+
+  useEffect(() => {
+    function handleKeyDown(event: any) {
+      if (event.keyCode === 13) {
+        getAllProduct()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [productName]);
+
   useEffect(() => {
     getAllProduct()
+  }, [page, size])
+
+  useEffect(() => {
+    getAllCategory()
   }, [])
 
-  const getAllProduct =async () => {
+  const getAllProduct = async () => {
     setLoading(true)
     try {
-      const res = await api.product.getAllProduct()
-      console.log(res, 'keytest')
-      setListProduct(res.data)
-    } catch (err) { }
+      const res = await api.product.getAllProduct(page, size)
+      const listProduct = res.data.data.filter((item: ProductResponse) => item.name.toLowerCase().includes(productName.toLowerCase()))
+      setListProduct(listProduct.reverse())
+      setTotal(res.data.total)
+    } catch (err) {
+      notification.error({
+        message: "Thông báo",
+        description: "Không thể lấy danh sách sản phẩm"
+      })
+    }
     finally {
       setLoading(false)
     }
   }
-  const _renderButtonDelete = (text: any, record: CategoryType, index: number) => {
-    return (
-      <Popconfirm
-        title="Bạn có chắc chắn xóa sản phẩm?"
-        onConfirm={(e) => handleRemoveProduct(e, record)}
-        onCancel={(e: any) => e.stopPropagation()}
-        okText="Yes"
-        cancelText="No"
-      >
-        <DeleteOutlined onClick={(e) => e.stopPropagation()} />
-      </Popconfirm>
-    )
+
+  const getAllCategory = async () => {
+    try {
+      const res = await api.category.getAllCategory()
+      setListCategory(res.data)
+    } catch (err) { }
   }
-  const handleOnRowTable = (record: CategoryType) => {
-    navigate(`/category/${record.category_cd}`, { state: record })
-  }
+
   const onchangeNameSearch = (e: any) => {
     setProductName(e.target.value)
-    console.log(e.target.value, 'name')
   }
-  const handleAddCustomer = () => {
-    console.log('Add san pham moi')
-  }
+
   const _renderHeaderProduct = () => {
     return (
       <div className='header-category'>
@@ -87,9 +104,15 @@ export default function Customer() {
       <div className='list-category-container'>
         <TableListProduct
           listProduct={listProduct}
-          loadingTable={false}
-          onrowTable={() => { }}
+          loadingTable={loading}
+          getListProduct={getAllProduct}
         />
+        <Pagination
+          pageSize={10}
+          size={'default'}
+          defaultPageSize={10}
+          total={total}
+        />;
       </div>
     )
   }
@@ -102,13 +125,8 @@ export default function Customer() {
           title='Thêm sản phẩm mới'
           handleCancel={() => setShowModalAddProduct(false)}
           handleOk={() => { }}
-        />
-      }
-      {showModalDetailProduct &&
-        <ModalProductDetail
-          title='Chi tiết sản phẩm'
-          handleCancel={() => setShowModalDetailProduct(false)}
-          handleOk={() => { }}
+          listCategory={listCategory}
+          getListCate={getAllProduct}
         />
       }
     </div>

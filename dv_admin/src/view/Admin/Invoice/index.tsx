@@ -10,6 +10,7 @@ import { DateUtils } from '../../../Ultils/DateFormat';
 import { MoneyFormat } from '../../../Ultils/MoneyFormat';
 import ModalInvoiceDetail from './ModalInvoiceDetail';
 import { DeleteOutlined } from '@ant-design/icons';
+import { checkStatus } from '../../../Ultils/Status';
 export default function Invoice() {
   const navigate = useNavigate()
   const [loadingTable, setloadingTable] = useState(false)
@@ -21,12 +22,12 @@ export default function Invoice() {
   useEffect(() => {
     getAllInvoice()
   }, [])
-  
+
   const getAllInvoice = async () => {
     setloadingTable(true)
     try {
       const res = await api.invoice.getAllInvoice()
-      setListInvoice(res.data)
+      setListInvoice(res.data.reverse())
     }
     catch (err) {
       notification.error({
@@ -40,8 +41,9 @@ export default function Invoice() {
   }
 
   const _renderStatus = (text: number, record: InvoiceRespose, index: number) => {
+    const status = checkStatus(text)
     return (
-      <Tag color={text ? 'green' : 'red'}>{text ? 'Đã hoàn thành' : 'Đã hủy'}</Tag>
+      <Tag color={status.color}>{status.name}</Tag>
     )
   }
 
@@ -172,10 +174,10 @@ export default function Invoice() {
       <div className='header-category'>
         <div className='title-category'>
           <h4>Hóa đơn</h4>
-          <Button className='button' onClick={gotoCreateInvoice}>
+          {/* <Button className='button' onClick={gotoCreateInvoice}>
             <PlusCircleOutlined />
             Tạo đơn mới
-          </Button>
+          </Button> */}
         </div>
         <Input
           className="header-search"
@@ -209,6 +211,7 @@ export default function Invoice() {
           onCancel={() => setModalDetailInvoice(false)}
           onOk={() => { }}
           invoiceInfo={invoiceInfoDetail}
+          getListOrder= {getAllInvoice}
         />
       }
     </div>

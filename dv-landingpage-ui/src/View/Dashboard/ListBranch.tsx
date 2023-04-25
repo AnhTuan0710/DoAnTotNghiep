@@ -13,7 +13,7 @@ export default function ListBranch() {
   ]
   return (
     <Swiper
-      slidesPerView={3}
+      slidesPerView={6}
       spaceBetween={30}
       freeMode={true}
       pagination={{
@@ -25,7 +25,7 @@ export default function ListBranch() {
     >
       {LIST_BRANCH.map((item, index) => {
         return <SwiperSlide key={index}>
-          <img src={item.src} style={{ width: '100%', height: '200px', borderRadius: '10px' }} alt='' />
+          <img src={item.src} style={{ width: '100%', height: '100px', borderRadius: '10px' }} alt='' />
           <h5>{item.name}</h5>
         </SwiperSlide>
       })}

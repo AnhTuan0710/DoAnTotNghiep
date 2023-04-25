@@ -25,3 +25,16 @@ export interface InvoiceRespose {
   user: any,
   orderDetails: any[],
 }
+
+export interface UpdateOrderDto {
+  orderNumber?: string;
+  totalAmount?: number;
+  userId?: number;
+  productIds?: productType[];
+  status?: number;
+}
+
+export interface productType {
+  id: number,
+  quantity: number
+}

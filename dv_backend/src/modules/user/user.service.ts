@@ -15,6 +15,8 @@ export class UsersService {
   }
 
   async regiter(user: User): Promise<User> {
+    user.create_date = new Date()
+    user.update_date = new Date()
     return await this.usersService.save(user)
   }
 

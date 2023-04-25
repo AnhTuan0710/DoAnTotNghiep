@@ -39,3 +39,14 @@ export interface ProductResponse {
   weight: string,
   unit: string,
 }
+
+export interface ProductCreateDto {
+  name: string,
+  price: number,
+  image: string,
+  size: string,
+  unit: string,
+  weight: string,
+  description: string,
+  categoryId: number
+}

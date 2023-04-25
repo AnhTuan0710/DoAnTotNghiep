@@ -38,4 +38,9 @@ export class OrderController {
   async getOrderByUser(@Param('id') id: number): Promise<Order[]> {
     return await this.orderService.findByUserId(id);
   }
+
+  @Get('total-by-day')
+  async getToByDay(): Promise<{ date: string; total: number }[]> {
+    return await this.orderService.getTotalByDay();
+  }
 }

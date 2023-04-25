@@ -1,3 +1,4 @@
+import { UpdateOrderDto } from "../dataType/invoice";
 import client from "./apiConfig";
 
 export default {
@@ -10,5 +11,9 @@ export default {
     const url = `/orders/${id}`;
     const response = await client.delete(url);
     return response;
+  },
+  async upadteOrder(id: number, data: UpdateOrderDto) {
+    const url = `orders/${id}`
+    return await client.put(url, data)
   }
 }

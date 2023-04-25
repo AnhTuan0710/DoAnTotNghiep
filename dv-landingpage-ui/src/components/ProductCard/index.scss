@@ -34,14 +34,15 @@
     flex-direction: column;
     flex: 1;
     &-name {
-      height: 40px;
+      height: 30px;
       & h4 {
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
         word-break: break-word;
+        font-size: 18px;
       }
     }
     &-price {
@@ -52,7 +53,12 @@
       }
     }
     &-supplier-name {
-      color: $main;
+      color: rgb(65, 103, 244);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1; /* number of lines to show */
+      -webkit-box-orient: vertical;
     }
     .add-to-cart {
       margin-top: auto;
@@ -63,6 +69,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        background-color: $main;
+        color: white;
+        font-weight: 600;
         padding: 20px 0;
       }
     }

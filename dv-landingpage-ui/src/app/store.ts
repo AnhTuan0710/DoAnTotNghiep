@@ -8,7 +8,7 @@ import rootReducers from '../redux/reducer';
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ['customer', 'auth']
+  whitelist: ['cart', 'auth', 'order']
 };
 const persistedReducer = persistReducer(persistConfig, rootReducers);
 

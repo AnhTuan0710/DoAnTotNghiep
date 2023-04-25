@@ -1,15 +1,18 @@
-import { Col, Modal, Row, Table, Tag } from "antd";
+import { Button, Col, Modal, Row, Table, Tag, notification } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { InvoiceRespose, ProductInvoice } from "../../../dataType/invoice";
+import { InvoiceRespose, ProductInvoice, UpdateOrderDto } from "../../../dataType/invoice";
 import { MoneyFormat } from "../../../Ultils/MoneyFormat";
 import './modal-invoice-detail.scss'
+import { checkStatus } from "../../../Ultils/Status";
+import api from "../../../api";
 type Props = {
   onOk: () => void,
   onCancel: () => void
   invoiceInfo: InvoiceRespose
+  getListOrder: () => void
 }
 export default function ModalInvoiceDetail(props: Props) {
-  const { onOk, onCancel, invoiceInfo } = props
+  const { onOk, onCancel, invoiceInfo, getListOrder } = props
   const listDetailInvoice = invoiceInfo.orderDetails
   const _renderInvoiceInfoItem = (title: string, value: string) => {
     return (
@@ -88,11 +91,12 @@ export default function ModalInvoiceDetail(props: Props) {
     )
   }
   const _renderStatus = () => {
+    const status = checkStatus(invoiceInfo.status)
     return (
       <Col xs={24} md={12}>
         <div className="import-detail-info-item">
           <p className="title-item">Trạng thái: </p>
-          <Tag color={invoiceInfo.status ? 'green' : 'red'}>{invoiceInfo.status ? 'Đã hoàn thành' : 'Đã hủy'}</Tag>
+          <Tag color={status.color}>{status.name}</Tag>
         </div>
       </Col>
     )
@@ -100,6 +104,28 @@ export default function ModalInvoiceDetail(props: Props) {
   const handleOnRowTable = (record: ProductInvoice) => {
 
   }
+
+  const handleHuy = async (status: number) => {
+    try {
+      const id = invoiceInfo.id
+      const data: UpdateOrderDto= {
+        status: status
+      }
+      await api.invoice.upadteOrder(id, data)
+      notification.success({
+        message: "Thông báo",
+        description: "Cập nhật đơn hàng thành công",
+      })
+      onCancel()
+      getListOrder()
+    }catch(err) {
+      notification.error({
+        message: "Thông báo",
+        description: "Cập nhật hàng thất bại"
+      })
+    }
+  }
+
   const _renderTableProductImport = () => {
     return (
       <Table
@@ -122,12 +148,26 @@ export default function ModalInvoiceDetail(props: Props) {
       onCancel={onCancel}
       title='Chi tiết hóa đơn'
       width={800}
+      footer={
+
+        <div className="button-footer">
+          <Button danger onClick={() => handleHuy(0)}>Hủy đơn</Button>
+          <div className="button-group">
+            <Button onClick={onCancel}>Đóng</Button>
+            {invoiceInfo.status !== 1 &&
+              <Button className="button"  onClick={() => handleHuy(1)}>Xác nhận</Button>
+            }
+          </div>
+        </div>
+
+      }
+      className="modal-invoice-detail-container"
     >
       <Row gutter={[16, 8]}>
         {_renderInvoiceInfoItem('Mã hóa đơn', invoiceInfo.orderNumber)}
         {_renderInvoiceInfoItemNumber('Tổng đơn hàng', invoiceInfo.totalAmount)}
         {_renderInvoiceInfoItem('Mã khách hàng', invoiceInfo.user.id)}
-        {_renderInvoiceInfoItemNumber('Tên khách hàng', invoiceInfo.user.name)}
+        {_renderInvoiceInfoItem('Tên khách hàng', invoiceInfo.user.name)}
         {_renderStatus()}
       </Row>
       <div className="mt-3">

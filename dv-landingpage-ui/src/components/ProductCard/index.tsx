@@ -1,31 +1,36 @@
+import { ProductResponse } from "../../dataType/product";
 import "./index.scss";
-import { Button, Card, Tag } from "antd";
+import { Button, Card } from "antd";
 
+type Props = {
+  productInfo: ProductResponse
+  addProductToCart: (id: ProductResponse) => void
+}
 
-export default function ProductCard() {
+export default function ProductCard(props: Props) {
+  const { productInfo, addProductToCart } = props
   return (
     <div className="product-card">
       <Card
         hoverable
         cover={
           <div className='image-container'>
-            <img src='' alt="product-card" />
+            <img src={productInfo.image} alt="product-card" />
           </div>
         }
       >
-        <Tag className='product-type-tag'>Điểm</Tag>
         <div className="product-card-content">
           <div className="product-card-content-name">
-            <h4>Tên sản phẩm</h4>
+            <h4>{productInfo.name}</h4>
           </div>
-          <div className='product-card-content-supplier-name'>Tên hãng</div>
+          <div className="product-card-content-supplier-name">{productInfo.description}</div>
           <div className="product-card-content-price">
-            <span>20000</span>
+            <span>{productInfo.price}</span>
             {"/"}
-            <span>Sản phẩm</span>
+            <span>{productInfo.unit}</span>
           </div>
           <div className="add-to-cart" onClick={(e: any) => { e.stopPropagation() }}>
-            <Button className="button">Thêm vào giỏ hàng</Button>
+            <Button className="button" onClick={() => addProductToCart(productInfo)}>Thêm vào giỏ hàng</Button>
           </div>
         </div>
       </Card>

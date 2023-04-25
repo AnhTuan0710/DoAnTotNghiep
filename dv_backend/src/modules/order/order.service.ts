@@ -93,7 +93,7 @@ export class OrderService {
       order.products = products;
     }
 
-    if (updateOrderDto.status) {
+    if (updateOrderDto.status !== -1) {
       order.status = updateOrderDto.status;
     }
 
@@ -110,5 +110,17 @@ export class OrderService {
   async findByUserId(userId: number): Promise<Order[]> {
     const user = await this.userRepository.findOne({ where: { id: userId, active_flg: 1 } });
     return this.orderRepository.find({ where: { user: user }, relations: ['user', 'products', 'orderDetails'] });
+  }
+
+  async getTotalByDay(): Promise<{ date: string; total: number }[]> {
+    const result = await this.orderRepository
+      .createQueryBuilder('dv_order')
+      .select('DATE(dv_order.create_date) as date')
+      .addSelect('SUM(dv_order.totalAmount) as total')
+      .groupBy('DATE(dv_order.create_date)')
+      .orderBy('DATE(dv_order.create_date)')
+      .getRawMany();
+
+    return result.map((item) => ({ date: item.date, total: parseFloat(item.total) }));
   }
 }

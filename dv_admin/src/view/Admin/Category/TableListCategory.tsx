@@ -30,7 +30,7 @@ export default function TableListCategory(props: Props) {
   }
 
   const handleDetail = (record: CategoryResponse) => {
-    navigate(`/management/category/${record.id}`, { state: record })
+    navigate(`/category/${record.id}`, { state: record })
   }
 
   const renderDetail = (text: any, record: CategoryResponse, index: number) => {
