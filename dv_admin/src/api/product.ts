@@ -4,7 +4,7 @@ import client from "./apiConfig";
 export default {
   async getAllProduct(page: number, size: number) {
     const url = `/products?page=${page}&size=${size}`;
-    return await client.get(url)
+    return await client.post(url)
   },
   async createNewProduct(product: ProductCreateDto) {
     const url = `/products`;

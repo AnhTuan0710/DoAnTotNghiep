@@ -1,8 +1,11 @@
 import { UsersService } from './user.service';
-import { Controller, UseGuards, Get, Query, Request} from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Request, Put, Param, Body } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '../../models/user.entity';
+import { UpdateResult } from 'typeorm';
+import { UpdateUserDto } from '../../dto/user.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -19,11 +22,15 @@ export class UserController {
   findAll() {
     return this.userService.findAll()
   }
-  
+
   @Get('profile')
   @UseGuards(AuthGuard('jwt'))
   async getUserInfo(@Request() req) {
     return req.user;
   }
-   
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+    return await this.userService.updateInfoUser(id, updateUserDto);
+  }
 }

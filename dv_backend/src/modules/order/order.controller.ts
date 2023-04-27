@@ -8,6 +8,11 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) { }
+  
+  @Get('total-by-day')
+  async getToByDay(): Promise<{ date: string; total: number }[]> {
+    return await this.orderService.getTotalByDay();
+  }
 
   @Get()
   async getAllOrders(): Promise<Order[]> {
@@ -39,8 +44,4 @@ export class OrderController {
     return await this.orderService.findByUserId(id);
   }
 
-  @Get('total-by-day')
-  async getToByDay(): Promise<{ date: string; total: number }[]> {
-    return await this.orderService.getTotalByDay();
-  }
 }

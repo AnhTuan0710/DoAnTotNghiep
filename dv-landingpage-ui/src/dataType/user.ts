@@ -27,3 +27,9 @@ export interface UserReponse {
   active_flg: number,
   status: number
 }
+
+export interface UserUpdateDto {
+  address: string,
+  phone_no: string,
+  name: string,
+}

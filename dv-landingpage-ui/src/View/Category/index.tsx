@@ -1,15 +1,17 @@
-import { Badge, Col, Input, Pagination, Row, notification } from 'antd'
+import { Badge, Checkbox, Col, Input, Pagination, Row, notification } from 'antd'
 import { BANNER_MAY1 } from '../../assets'
 import './category.scss'
 import { useEffect, useState } from 'react'
 import api from '../../api'
-import { ProductResponse } from '../../dataType/product'
+import { ProductResponse, ProductSearchDto } from '../../dataType/product'
 import ProductCard from '../../components/ProductCard'
 import { CartRequest } from '../../dataType/cart'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/reducer'
 import { updateCart } from '../../redux/action/cart'
 import { SearchOutlined } from '@ant-design/icons'
+import { CategoryResponse } from '../../dataType/category'
+import { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 export default function Category() {
   const [listProduct, setListProduct] = useState<ProductResponse[]>([])
@@ -20,18 +22,26 @@ export default function Category() {
   const [total, setTotal] = useState(0)
   const dispatch = useDispatch()
   const [productName, setProductName] = useState('')
-
-  const _renderContent = () => {
-    return (
-      <Row>
-        <Col xs={24}></Col>
-      </Row>
-    )
-  }
+  const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
+  const [listCate, setListCate] = useState<number[]>([])
 
   useEffect(() => {
     getAllProduct()
   }, [page, size])
+
+  useEffect(() => {
+    getAllCategory()
+  }, [])
+
+  const getAllCategory = async () => {
+    try {
+      const res = await api.category.getAllCategory()
+      setListCategory(res.data)
+      setListCate(res.data.map((item: any) => {
+        return item.id
+      }))
+    } catch (err) { }
+  }
 
   useEffect(() => {
     function handleKeyDown(event: any) {
@@ -43,13 +53,16 @@ export default function Category() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [productName]);
+  }, [productName, listCate]);
 
   const getAllProduct = async () => {
     try {
-      const res = await api.product.getAllProduct(page, size)
-      const listProduct = res.data.data.filter((item: ProductResponse) => item.name.toLowerCase().includes(productName.toLowerCase()))
-      setListProduct(listProduct.reverse())
+      const data: ProductSearchDto = {
+        categoryId: listCate,
+        name: productName
+      }
+      const res = await api.product.getAllProduct(page, size, data)
+      setListProduct(res.data.data)
       setTotal(res.data.total)
     } catch (err) {
       notification.error({
@@ -90,6 +103,26 @@ export default function Category() {
     setSize(pageSize)
   }
 
+  const onChangeCheckGroup = (checkedValues: any) => {
+    setListCate(checkedValues)
+  };
+
+  const _renderCheckBoxGroup = () => {
+    return (
+      <Checkbox.Group style={{ width: '100%' }} onChange={onChangeCheckGroup}>
+        <Row>
+          {listCategory.map((item: CategoryResponse, index: number) => {
+            return (
+              <Col xs={24} key={index} className='ps-3 my-2' style={{backgroundColor: '#f1f1f1', borderRadius: '5px'}}>
+                <Checkbox value={item.id} className='py-2'>{item.name}</Checkbox>
+              </Col>
+            )
+          })}
+        </Row>
+      </Checkbox.Group>
+    )
+  }
+
   return (
     <>
       <div className='category-container'>
@@ -110,23 +143,31 @@ export default function Category() {
           />
         </div>
         <Row gutter={24}>
-          {listProduct.map((item: ProductResponse) => {
-            return <Col xs={12} md={8} lg={6} xl={4}>
-              {item.status ?
-                <ProductCard
-                  productInfo={item}
-                  addProductToCart={addProductToCart}
-                />
-                :
-                <Badge.Ribbon text="Ngừng kinh doanh" color='red'>
-                  <ProductCard
-                    productInfo={item}
-                    addProductToCart={addProductToCart}
-                  />
-                </Badge.Ribbon>
-              }
-            </Col>
-          })}
+          <Col xs={24} md={5} className='font-filter-container'>
+            <p className='title-category'>Danh mục sản phẩm</p>
+            {_renderCheckBoxGroup()}
+          </Col>
+          <Col xs={24} md={19}>
+            <Row gutter={12}>
+              {listProduct.map((item: ProductResponse, index: number) => {
+                return <Col xs={12} md={8} lg={6} key={index}>
+                  {item.status ?
+                    <ProductCard
+                      productInfo={item}
+                      addProductToCart={addProductToCart}
+                    />
+                    :
+                    <Badge.Ribbon text="Ngừng kinh doanh" color='red'>
+                      <ProductCard
+                        productInfo={item}
+                        addProductToCart={addProductToCart}
+                      />
+                    </Badge.Ribbon>
+                  }
+                </Col>
+              })}
+            </Row>
+          </Col>
         </Row>
         <Pagination
           defaultPageSize={size}

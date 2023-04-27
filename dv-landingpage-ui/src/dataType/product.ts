@@ -15,3 +15,8 @@ export interface ProductResponse {
   weight: string,
   unit: string,
 }
+
+export interface ProductSearchDto {
+  categoryId?: number[],
+  name?: string, 
+}

@@ -56,7 +56,7 @@ export function Order() {
   const handleCancel = async (record: OrderRespose) => {
     try {
       const id = record.id
-      const data: UpdateOrderDto= {
+      const data: UpdateOrderDto = {
         status: 0
       }
       await api.order.upadteOrder(id, data)
@@ -64,7 +64,8 @@ export function Order() {
         message: "Thông báo",
         description: "Hủy đơn hàng thành công",
       })
-    }catch(err) {
+      getAllOrder()
+    } catch (err) {
       notification.error({
         message: "Thông báo",
         description: "Hủy đơn hàng thất bại"
@@ -138,14 +139,14 @@ export function Order() {
 
   const items: TabsProps['items'] = [
     {
-      key: '1',
-      label: `Đã được duyệt`,
-      children: _renderorderActive(1),
-    },
-    {
       key: '2',
       label: `Chờ duyệt`,
       children: _renderorderActive(2),
+    },
+    {
+      key: '1',
+      label: `Đã được duyệt`,
+      children: _renderorderActive(1),
     },
     {
       key: '3',

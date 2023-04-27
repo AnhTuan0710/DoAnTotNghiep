@@ -1,4 +1,4 @@
-import { Col, Row, notification } from "antd";
+import { Badge, Col, Row, notification } from "antd";
 import { Link } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import { useEffect, useState } from "react";
@@ -33,10 +33,10 @@ export default function ListProduct() {
 
   const addProductToCart = (productAdd: ProductResponse) => {
     const product = cart.productIds.find(item => item.product.id === productAdd.id)
-    if(product) {
+    if (product) {
       notification.warning({
         message: 'Thông báo',
-        description:'Sản phẩm đã được thêm vào giỏ hàng!'
+        description: 'Sản phẩm đã được thêm vào giỏ hàng!'
       })
     }
     else {
@@ -44,7 +44,7 @@ export default function ListProduct() {
         userId: userInfo.id,
         totalAmount: cart.totalAmount + productAdd.price,
         orderNumber: 0,
-        productIds: [...cart.productIds, {product: productAdd, quantity: 1}]
+        productIds: [...cart.productIds, { product: productAdd, quantity: 1 }]
       }
       dispatch(updateCart(cartNew))
     }
@@ -59,12 +59,21 @@ export default function ListProduct() {
           </div>
           <Row gutter={24}>
             {item.products.map((item: ProductResponse, index: number) => {
-              if (index < 6) return <Col xs={12} md={8} lg={6} xl={4}>
-                <ProductCard
-                productInfo={item} 
-                addProductToCart= {addProductToCart}
-                /> 
-                </Col>
+              if (index < 6) return <Col xs={12} md={8} lg={6} xl={4} key={index}>
+                {item.status ?
+                  <ProductCard
+                    productInfo={item}
+                    addProductToCart={addProductToCart}
+                  />
+                  :
+                  <Badge.Ribbon text="Ngừng kinh doanh" color='red'>
+                    <ProductCard
+                      productInfo={item}
+                      addProductToCart={addProductToCart}
+                    />
+                  </Badge.Ribbon>
+                }
+              </Col>
             })}
           </Row>
         </>

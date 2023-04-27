@@ -1,10 +1,11 @@
 @import "../../index.scss";
 .footer-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   background-color: $main;
   color: white;
   font-weight: bold;
+  margin: 5px auto;
   width: 100%;
   padding: 0px;
   padding-top: 10px;

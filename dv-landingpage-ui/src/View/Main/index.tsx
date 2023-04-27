@@ -11,7 +11,7 @@ export default function Main() {
         <Header style={{ backgroundColor: '#f5f5f5', position: 'sticky', top: 0, zIndex: 1000, width: '100%', padding: '0px' }} >
           <HeaderLayout></HeaderLayout>
         </Header>
-        <Content>
+        <Content style={{width: '90%', margin: '5px auto'}}>
           <Outlet></Outlet>
         </Content>
         <Footer style={{ backgroundColor: '#f5f5f5', position: 'sticky', top: 0, zIndex: 1000, width: '100%', padding: '0px' }}>

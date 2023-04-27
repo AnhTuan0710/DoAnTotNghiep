@@ -3,7 +3,7 @@ import { Product } from './../../models/product.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductDto, ProductRespose } from '../../dto/product.dto';
+import { ProductDto, ProductRespose, ProductSearchDto, ProductTrendingDto } from '../../dto/product.dto';
 
 @Injectable()
 export class ProductService {
@@ -30,18 +30,28 @@ export class ProductService {
     return await this.productRepository.save(product);
   }
 
-  async findAll(page: number, size: number): Promise<ProductRespose> {
+  async findAll(page: number, size: number, searchParam: ProductSearchDto): Promise<ProductRespose> {
+    const { categoryId, name } = searchParam;
     const queryBuilder = this.productRepository.createQueryBuilder('dv_product')
       .leftJoinAndSelect('dv_product.category', 'dv_category')
-      .where('dv_product.active_flg != 0')
-      .skip((page - 1) * size)
-      .take(size);
-    const data: ProductRespose = {
-      data: (await queryBuilder.getMany()),
-      total: (await this.productRepository.find({where: {active_flg: 1}})).length
+      .where('dv_product.active_flg != 0');
+  
+    if (categoryId && categoryId.length > 0) {
+      queryBuilder.andWhere('dv_category.id IN (:...categoryId)', { categoryId });
     }
+  
+    if (name) {
+      queryBuilder.andWhere('dv_product.name LIKE :name', { name: `%${name}%` });
+    }
+  
+    const data: ProductRespose = {
+      data: (await queryBuilder.skip((page - 1) * size).take(size).getMany()),
+      total: (await this.productRepository.find({ where: { active_flg: 1 } })).length
+    };
+  
     return data;
   }
+  
 
   async findOne(id: number): Promise<Product> {
     return await this.productRepository.findOne({
@@ -76,5 +86,16 @@ export class ProductService {
   async getAllProductOfCategory(id: number): Promise<Product[]> {
     const listproduct = await this.productRepository.find({ relations: ['category'] });
     return listproduct.filter(item => item.category.id === id)
+  }
+
+  async getBestSellingProducts(): Promise<ProductTrendingDto[]> {
+    const queryBuilder = await this.productRepository.createQueryBuilder('dv_product')
+      .innerJoin('dv_detail_order', 'ddo', 'ddo.productId = dv_product.id')
+      .select('SUM(ddo.quantity)', 'total_sale')
+      .addSelect('dv_product.*')
+      .where('dv_product.active_flg != 0')
+      .groupBy('dv_product.id')
+      .orderBy('total_sale', 'DESC');
+    return queryBuilder.getRawMany()
   }
 }

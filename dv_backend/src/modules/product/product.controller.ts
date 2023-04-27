@@ -1,3 +1,4 @@
+import { ProductSearchDto, ProductTrendingDto } from './../../dto/product.dto';
 import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '../../models/product.entity';
@@ -8,11 +9,16 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('products')
 @ApiTags('products')
 export class ProductController {
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService) { }
 
-  @Get()
-  async findAll(@Query('page') page: number, @Query('size') size: number): Promise<ProductRespose> {
-    return await this.productService.findAll(page, size);
+  @Get('trending')
+  async getTranding(): Promise<ProductTrendingDto[]> {
+    return await this.productService.getBestSellingProducts();
+  }
+
+  @Post()
+  async findAll(@Query('page') page: number, @Query('size') size: number, @Body() searchParam: ProductSearchDto): Promise<ProductRespose> {
+    return await this.productService.findAll(page, size, searchParam);
   }
 
   @Get(':id')
@@ -39,4 +45,5 @@ export class ProductController {
   async findAllWithCategory(@Param('id') id: number): Promise<Product[]> {
     return await this.productService.getAllProductOfCategory(id);
   }
+
 }
