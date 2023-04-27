@@ -165,7 +165,7 @@ export default function Cart() {
         {_renderInfoCheckOut('Địa chỉ:', userInfo.address)}
         {_renderInfoCheckOut('SĐT:', userInfo.phone_no)}
         {_renderTotalMoney()}
-        <Button className='button' onClick={handleCreateInvoice} style={{marginBottom: '10px'}}>TẠO ĐƠN</Button>
+        <Button className='button' onClick={handleCreateInvoice} style={{marginBottom: '10px', fontWeight: 600}}>TẠO ĐƠN</Button>
       </div>
     )
   }

@@ -7,7 +7,6 @@ import { useState } from 'react';
 import api from '../../api';
 import { useDispatch } from 'react-redux';
 import { SaveToken, saveInfoUser } from '../../redux/action/auth';
-import { UserInfoReponse } from '../../dataType/auth';
 import { saveOrder } from '../../redux/action/order';
 
 function SignIn() {
@@ -24,29 +23,13 @@ function SignIn() {
     }
   }
 
-  const getInfoUser = async (token: string) => {
-    try {
-      const res = await api.auth.getInforUser(token)
-      const data: UserInfoReponse = {
-        id: res.data.id,
-        name: res.data.name,
-        email: res.data.email,
-        create_date: res.data.create_date,
-        update_date: res.data.update_date,
-        address: res.data.address,
-        phone_no: res.data.phone_no
-      }
-      dispatch(saveInfoUser(data))
-      getAllInvoice(res.data.id)
-    } catch (err) { }
-  }
   const onFinish = async (values: LoginParam) => {
     setLoading(true)
     try {
       const res = await api.auth.login(values)
-      console.log(res.data, 'keytest')
       dispatch(SaveToken(res.data.access_token))
-      getInfoUser(res.data.access_token)
+      dispatch(saveInfoUser(res.data.user))
+      getAllInvoice(res.data.user.id)
       navigate('/dashboard')
     } catch (err) {
       notification.error({
