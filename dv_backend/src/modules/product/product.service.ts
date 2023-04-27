@@ -3,7 +3,7 @@ import { Product } from './../../models/product.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductDto, ProductRespose } from '../../dto/product.dto';
+import { ProductDto, ProductRespose, ProductTrendingDto } from '../../dto/product.dto';
 
 @Injectable()
 export class ProductService {
@@ -38,7 +38,7 @@ export class ProductService {
       .take(size);
     const data: ProductRespose = {
       data: (await queryBuilder.getMany()),
-      total: (await this.productRepository.find({where: {active_flg: 1}})).length
+      total: (await this.productRepository.find({ where: { active_flg: 1 } })).length
     }
     return data;
   }
@@ -75,5 +75,16 @@ export class ProductService {
   async getAllProductOfCategory(id: number): Promise<Product[]> {
     const listproduct = await this.productRepository.find({ relations: ['category'] });
     return listproduct.filter(item => item.category.id === id)
+  }
+
+  async getBestSellingProducts(): Promise<ProductTrendingDto[]> {
+    const queryBuilder = await this.productRepository.createQueryBuilder('dv_product')
+      .innerJoin('dv_detail_order', 'ddo', 'ddo.productId = dv_product.id')
+      .select('SUM(ddo.quantity)', 'total_sale')
+      .addSelect('dv_product.*')
+      .where('dv_product.active_flg != 0')
+      .groupBy('dv_product.id')
+      .orderBy('total_sale', 'DESC');
+    return queryBuilder.getRawMany()
   }
 }

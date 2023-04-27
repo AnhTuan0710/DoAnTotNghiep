@@ -5,19 +5,27 @@ import './user.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import moment from 'moment'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import api from '../../api'
 import { UserUpdateDto } from '../../dataType/user'
-import { saveInfoUser } from '../../redux/action/auth'
-import { UserInfoReponse } from '../../dataType/auth'
+import { LogOut, saveInfoUser } from '../../redux/action/auth'
 
 export default function User() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const infoUser = useSelector((state: RootState) => state.auth)
-  const order = useSelector((state: RootState) => state.order)
   const [edit, setEdit] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [listOrder, setListOrder] = useState(0)
+
+  useEffect(() => {getAllInvoice()}, [])
+
+  const getAllInvoice = async () => {
+    try {
+      const res = await api.order.getAllOrderByUser(infoUser.id)
+      setListOrder(res.data.length)
+    }catch(err){}
+  }
 
   const onFinish = (e: UserUpdateDto) => {
     if (!edit) {
@@ -33,6 +41,7 @@ export default function User() {
 
   const handleLogOut = () => {
     navigate('/sign-in')
+    dispatch(LogOut())
   }
 
   const handleChangeInfo = async (e: UserUpdateDto) => {
@@ -42,7 +51,7 @@ export default function User() {
         ...infoUser,
         address: e.address,
         phone_no: e.phone_no,
-        name: e.phone_no,
+        name: e.name,
       }
       dispatch(saveInfoUser(userUpdateNew))
       await api.user.updateUserInfo(infoUser.id, e)
@@ -50,7 +59,7 @@ export default function User() {
         message: 'Thông báo',
         description: 'Cập nhật thông tin thành công',
       })
-
+      setEdit(false)
     } catch (err) {
       notification.error({
         message: 'Thông báo',
@@ -75,7 +84,7 @@ export default function User() {
           <Col xs={12}>
             <img src={ICON_DRIVER} alt='user' style={{ width: '40px' }} />
             <h6> Tổng đơn hàng</h6>
-            {order.length}
+            {listOrder}
           </Col>
         </Row>
         <Button type='primary' className='mt-5' onClick={handleLogOut}>Đăng xuất</Button>
@@ -97,7 +106,7 @@ export default function User() {
           autoComplete="off"
           className='form-input-login'
         >
-          <Form.Item label="Email" name='email' rules={[{ required: true, message: 'Nhập email!' }]} initialValue={infoUser.email}>
+          <Form.Item label="Tên" name='name' rules={[{ required: true, message: 'Nhập tên!' }]} initialValue={infoUser.name}>
             <Input disabled={!edit} />
           </Form.Item>
           <Form.Item label="Địa chỉ" name='address' rules={[{ required: true, message: 'Nhập địa chỉ!' }]} initialValue={infoUser.address}>
@@ -106,8 +115,8 @@ export default function User() {
           <Form.Item label="SĐT" name='phone_no' rules={[{ required: true, message: 'Nhập password!' }]} initialValue={infoUser.phone_no}>
             <Input disabled={!edit} />
           </Form.Item>
-          <Form.Item label="" style={{ textAlign: 'center', width: '100%' }} >
-            <Button type="primary" htmlType="submit" loading={loading} >{edit ? "Lưu" : "Chỉnh sửa"}</Button>
+          <Form.Item label="" style={{ textAlign: 'center', width: '100%'}} >
+            <Button type="primary" htmlType="submit" loading={loading} style={{ marginTop: '40px' }} >{edit ? "Lưu" : "Chỉnh sửa"}</Button>
           </Form.Item>
         </Form>
       </div>

@@ -10,6 +10,7 @@ import { clearCart, updateCart } from '../../redux/action/cart'
 import { OrderCreateNew } from '../../dataType/order'
 import api from '../../api'
 import { useNavigate } from 'react-router-dom'
+import { EditOutlined } from '@ant-design/icons';
 export default function Cart() {
   const cart: CartRequest = useSelector((state: RootState) => state.cart)
   const userInfo = useSelector((state: RootState) => state.auth)
@@ -159,13 +160,25 @@ export default function Cart() {
   const _renderInfoCheckout = () => {
     return (
       <div className='info-checkout'>
-        <h5>Thông tin thanh toán</h5>
+        <h5>
+          Thông tin thanh toán
+          <Button className='mx-2' style={{ border: 'none', color:'blue' }} onClick={() => navigate('/user')}>
+            <EditOutlined />  Sửa
+          </Button>
+        </h5>
         {_renderInfoCheckOut('Tên:', userInfo.name)}
         {_renderInfoCheckOut('Email:', userInfo.email)}
         {_renderInfoCheckOut('Địa chỉ:', userInfo.address)}
         {_renderInfoCheckOut('SĐT:', userInfo.phone_no)}
         {_renderTotalMoney()}
-        <Button className='button' onClick={handleCreateInvoice} style={{marginBottom: '10px', fontWeight: 600}}>TẠO ĐƠN</Button>
+        <Button
+          className='button'
+          onClick={handleCreateInvoice}
+          style={{ marginBottom: '30px',fontWeight: 700 }}
+          size='large'
+        >
+          TẠO ĐƠN
+        </Button>
       </div>
     )
   }
@@ -174,7 +187,7 @@ export default function Cart() {
     return (
       <div className='checkout-info'>
         <p>{title}</p>
-        <Input defaultValue={value} style={{ maxWidth: '300px' }}></Input>
+        <Input defaultValue={value} style={{ maxWidth: '300px' }} disabled={true}></Input>
       </div>
     )
   }
@@ -182,7 +195,7 @@ export default function Cart() {
   const _renderTotalMoney = () => {
     return (
       <div className='checkout-info-pay'>
-        <p className='text'>Tổng thanh toán</p>
+        <p className='text'> Tổng thanh toán  </p>
         <p className='value'>{MoneyFormat(cart.totalAmount)}</p>
       </div>
     )

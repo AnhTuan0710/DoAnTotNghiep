@@ -14,22 +14,12 @@ function SignIn() {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
 
-  const getAllInvoice = async (id: number) => {
-    try {
-      const res = await api.order.getAllOrderByUser(id)
-      dispatch(saveOrder(res.data))
-    }catch(err){
-
-    }
-  }
-
   const onFinish = async (values: LoginParam) => {
     setLoading(true)
     try {
       const res = await api.auth.login(values)
       dispatch(SaveToken(res.data.access_token))
       dispatch(saveInfoUser(res.data.user))
-      getAllInvoice(res.data.user.id)
       navigate('/dashboard')
     } catch (err) {
       notification.error({

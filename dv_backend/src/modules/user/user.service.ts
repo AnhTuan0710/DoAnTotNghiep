@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
+import { UpdateUserDto } from '../../dto/user.dto';
 import { User } from '../../models/user.entity';
 
 @Injectable()
@@ -30,5 +31,24 @@ export class UsersService {
 
   async findById(id: number): Promise<User | undefined> {
     return this.usersService.findOne({ where: { id: id } });
+  }
+
+  async updateInfoUser(id: number, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+    const user = await this.usersService.findOne({ where: { id: id } })
+    if (!user) {
+      throw new HttpException('Không tìm thấy khách hàng', HttpStatus.NOT_FOUND);
+    }
+    if (updateUserDto.address) {
+      user.address = updateUserDto.address
+    }
+    if (updateUserDto.name) {
+      user.name = updateUserDto.name
+    }
+    if (updateUserDto.phone_no) {
+      user.phone_no = updateUserDto.phone_no
+    }
+    user.update_date = new Date()
+
+    return this.usersService.update(id, user)
   }
 }

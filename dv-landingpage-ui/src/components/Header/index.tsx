@@ -31,11 +31,6 @@ export default function Header() {
       icon: <AppstoreAddOutlined />,
     },
     {
-      label: 'Liên hệ',
-      key: 'contact',
-      icon: <MailOutlined />,
-    },
-    {
       label: 'Đơn hàng',
       key: 'order',
       icon: <HddOutlined />,

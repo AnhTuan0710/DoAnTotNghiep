@@ -15,3 +15,7 @@ export interface ProductRespose {
   data: Product[],
   total: number
 }
+
+export class ProductTrendingDto extends Product {
+  total_sale: number
+}
