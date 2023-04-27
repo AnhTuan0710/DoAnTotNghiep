@@ -43,7 +43,7 @@ export default function Header() {
     {
       label: 'Giỏ hàng',
       key: 'cart',
-      icon: <Badge count={cart.productIds.length} status='success'>
+      icon: <Badge count={cart.productIds ? cart.productIds.length: 0} status='success'>
         <ShopOutlined />
       </Badge>,
     },

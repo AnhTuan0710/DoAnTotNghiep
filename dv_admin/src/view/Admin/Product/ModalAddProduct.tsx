@@ -1,11 +1,10 @@
 import { Button, Col, Form, Input, InputNumber, Modal, notification, Row, Select } from 'antd'
-import { ProductCreateDto, ProductResponse } from '../../../dataType/product';
+import { ProductCreateDto } from '../../../dataType/product';
 import { CategoryResponse } from '../../../dataType/category';
 import api from '../../../api';
 
 type Props = {
   title: string,
-  productInfo?: ProductResponse;
   handleOk: () => void,
   handleCancel: () => void,
   listCategory: CategoryResponse[],
@@ -13,7 +12,7 @@ type Props = {
 }
 const { Option } = Select
 export default function ModalAddProduct(props: Props) {
-  const { title, productInfo, handleOk, handleCancel, listCategory, getListCate} = props
+  const { title, handleOk, handleCancel, listCategory, getListCate} = props
   const onFinish = async (data: ProductCreateDto) => {
     try{
       await api.product.createNewProduct(data)

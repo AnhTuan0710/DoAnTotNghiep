@@ -1,4 +1,4 @@
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, FileSearchOutlined } from '@ant-design/icons';
 import { Popconfirm, Tag, notification } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { ProductResponse } from '../../dataType/product';
@@ -32,12 +32,21 @@ export default function TableListProduct(props: Props) {
       <Popconfirm
         title="Bạn có chắc chắn xóa sản phẩm?"
         onConfirm={(e) => handleDeleteProduct(e, record)}
-        onCancel={(e: any) => e.stopPropagation()}
         okText="Yes"
         cancelText="No"
       >
-        <DeleteOutlined onClick={(e) => e.stopPropagation()} />
+        <DeleteOutlined />
       </Popconfirm>
+    )
+  }
+
+  const handleDetailProduct = (record: ProductResponse) => {
+
+  }
+
+  const _renderButtonDetail = (text: any, record: ProductResponse, index: number) => {
+    return (
+      <FileSearchOutlined onClick={(e) => handleDetailProduct(record)} />
     )
   }
 
@@ -56,7 +65,7 @@ export default function TableListProduct(props: Props) {
   const renderImage = (text: any, record: ProductResponse, index: number) => {
     return (
       <div className='image-container'>
-        <img src={text} alt='image'/>
+        <img src={text} alt='image' />
       </div>
     )
   }
@@ -123,6 +132,14 @@ export default function TableListProduct(props: Props) {
       width: 20,
     },
     {
+      title: 'Chi tiết',
+      dataIndex: 'detail',
+      key: 'detai;',
+      align: "center",
+      render: _renderButtonDetail,
+      width: 20,
+    },
+    {
       title: 'Xóa',
       dataIndex: 'delete',
       key: 'delete',
@@ -133,13 +150,15 @@ export default function TableListProduct(props: Props) {
   ];
 
   return (
-    <Table
-      rowKey={'table-product'}
-      columns={columns}
-      dataSource={listProduct}
-      loading={loadingTable}
-      scroll={{ x: 900 }}
-      pagination={false}
-    />
+    <>
+      <Table
+        rowKey={'table-product'}
+        columns={columns}
+        dataSource={listProduct}
+        loading={loadingTable}
+        scroll={{ x: 900 }}
+        pagination={false}
+      />
+    </>
   )
 }

@@ -1,33 +1,25 @@
 import { DeleteOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Pagination, Popconfirm, notification } from 'antd'
-import type { ColumnsType } from 'antd/es/table';
+import { Button, Input, Pagination, notification } from 'antd'
 import { CategoryResponse, CategoryType } from '../../../dataType/category';
-import { ProductResponse, ProductType } from '../../../dataType/product';
+import { ProductResponse } from '../../../dataType/product';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TableListProduct from '../../../components/TableListProduct';
-import ModalProductDetail from './ModalProductDetail';
+import ModalProductDetail from './ModalAddProduct';
 import api from '../../../api';
 import './product.scss'
 import { LIMIT, PAGE_DEFAULT } from '../../../constants';
 
 export default function Customer() {
   const navigate = useNavigate()
-  const [loadingTable, setloadingTable] = useState(false)
   const [productName, setProductName] = useState('')
   const [showModalAddProduct, setShowModalAddProduct] = useState(false)
-  const [showModalDetailProduct, setShowModalDetailProduct] = useState(false)
   const [loading, setLoading] = useState(false)
   const [listProduct, setListProduct] = useState<ProductResponse[]>([])
   const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
   const [page, setPage] = useState(PAGE_DEFAULT)
   const [size, setSize] = useState(LIMIT)
   const [total, setTotal] = useState(0)
-
-  const handleRemoveProduct = (e: any, record: CategoryType) => {
-    e.stopPropagation()
-    console.log(record, 'keytest')
-  }
 
   useEffect(() => {
     function handleKeyDown(event: any) {
@@ -99,6 +91,12 @@ export default function Customer() {
       </div>
     )
   }
+
+  const onChange = (pageNumber: number, pageSize: number) => {
+    setPage(pageNumber)
+    setSize(pageSize)
+  }
+
   const _renderTableProduct = () => {
     return (
       <div className='list-category-container'>
@@ -108,10 +106,15 @@ export default function Customer() {
           getListProduct={getAllProduct}
         />
         <Pagination
-          pageSize={10}
+          defaultPageSize={size}
           size={'default'}
-          defaultPageSize={10}
+          defaultCurrent={1}
           total={total}
+          onChange={onChange}
+          showSizeChanger
+          className='my-1'
+          style={{float: 'right'}}
+          showTotal={(total) => `Tổng số ${total} sản phẩm`}
         />;
       </div>
     )

@@ -1,4 +1,4 @@
-import { Col, Input, Row, notification } from 'antd'
+import { Badge, Col, Input, Pagination, Row, notification } from 'antd'
 import { BANNER_MAY1 } from '../../assets'
 import './category.scss'
 import { useEffect, useState } from 'react'
@@ -15,8 +15,12 @@ export default function Category() {
   const [listProduct, setListProduct] = useState<ProductResponse[]>([])
   const cart: CartRequest = useSelector((state: RootState) => state.cart)
   const userInfo = useSelector((state: RootState) => state.auth)
+  const [page, setPage] = useState(1)
+  const [size, setSize] = useState(12)
+  const [total, setTotal] = useState(0)
   const dispatch = useDispatch()
   const [productName, setProductName] = useState('')
+
   const _renderContent = () => {
     return (
       <Row>
@@ -27,7 +31,7 @@ export default function Category() {
 
   useEffect(() => {
     getAllProduct()
-  }, [])
+  }, [page, size])
 
   useEffect(() => {
     function handleKeyDown(event: any) {
@@ -43,9 +47,10 @@ export default function Category() {
 
   const getAllProduct = async () => {
     try {
-      const res = await api.product.getAllProduct()
-      const listProduct = res.data.filter((item: ProductResponse) => item.name.toLowerCase().includes(productName.toLowerCase()))
+      const res = await api.product.getAllProduct(page, size)
+      const listProduct = res.data.data.filter((item: ProductResponse) => item.name.toLowerCase().includes(productName.toLowerCase()))
       setListProduct(listProduct.reverse())
+      setTotal(res.data.total)
     } catch (err) {
       notification.error({
         message: 'Không lấy được danh sách sản phẩm',
@@ -69,11 +74,20 @@ export default function Category() {
         productIds: [...cart.productIds, { product: productAdd, quantity: 1 }]
       }
       dispatch(updateCart(cartNew))
+      notification.success({
+        message: 'Thông báo',
+        description: 'Thêm vào giỏ hàng thành công!'
+      })
     }
   }
-  
+
   const onchangeNameSearch = (e: any) => {
     setProductName(e.target.value)
+  }
+
+  const onChange = (pageNumber: number, pageSize: number) => {
+    setPage(pageNumber)
+    setSize(pageSize)
   }
 
   return (
@@ -98,13 +112,33 @@ export default function Category() {
         <Row gutter={24}>
           {listProduct.map((item: ProductResponse) => {
             return <Col xs={12} md={8} lg={6} xl={4}>
-              <ProductCard
-                productInfo={item}
-                addProductToCart={addProductToCart}
-              />
+              {item.status ?
+                <ProductCard
+                  productInfo={item}
+                  addProductToCart={addProductToCart}
+                />
+                :
+                <Badge.Ribbon text="Ngừng kinh doanh" color='red'>
+                  <ProductCard
+                    productInfo={item}
+                    addProductToCart={addProductToCart}
+                  />
+                </Badge.Ribbon>
+              }
             </Col>
           })}
         </Row>
+        <Pagination
+          defaultPageSize={size}
+          size={'default'}
+          defaultCurrent={1}
+          total={total}
+          onChange={onChange}
+          showSizeChanger
+          className='my-5'
+          style={{ textAlign: 'center', fontSize: '18px', fontWeight: 600 }}
+          showTotal={(total) => `Tổng số ${total} sản phẩm`}
+        />;
       </div>
     </>
   )

@@ -9,6 +9,7 @@ export class ProductDto {
   description?: string;
   categoryId: number;
   unit?: string;
+  status?: number;
 }
 
 export interface ProductRespose {

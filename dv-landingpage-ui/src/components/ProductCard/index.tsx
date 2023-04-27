@@ -30,7 +30,7 @@ export default function ProductCard(props: Props) {
             <span>{productInfo.unit}</span>
           </div>
           <div className="add-to-cart" onClick={(e: any) => { e.stopPropagation() }}>
-            <Button className="button" onClick={() => addProductToCart(productInfo)}>Thêm vào giỏ hàng</Button>
+            <Button className="button" disabled={productInfo.status ? false: true} onClick={() => addProductToCart(productInfo)}>Thêm vào giỏ hàng</Button>
           </div>
         </div>
       </Card>

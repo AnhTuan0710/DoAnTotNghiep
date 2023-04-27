@@ -53,7 +53,7 @@ export class ProductService {
   }
 
   async updateProduct(id: number, productDto: ProductDto): Promise<Product> {
-    const { name, price, image, size, weight, description, categoryId } = productDto;
+    const { name, price, image, size, weight, description, categoryId, status } = productDto;
     const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
     const product = await this.productRepository.findOne({ where: { id: id } });
     product.name = name;
@@ -63,13 +63,14 @@ export class ProductService {
     product.weight = weight;
     product.description = description;
     product.category = category;
+    product.status = status;
     return await this.productRepository.save(product);
   }
 
   async delete(id: number): Promise<void> {
     const product = await this.productRepository.findOne({ where: { id: id } })
     product.active_flg = 0
-    await this.categoryRepository.update(id, product);
+    await this.productRepository.update(id, product);
   }
 
   async getAllProductOfCategory(id: number): Promise<Product[]> {
