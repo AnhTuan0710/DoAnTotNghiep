@@ -1,5 +1,5 @@
 import { Badge, Col, Input, Menu, MenuProps, Row } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MailOutlined, ShopOutlined, HddOutlined, AppstoreAddOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 import './header.scss'
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ export default function Header() {
   const [current, setCurrent] = useState('dashboard');
   const navigator = useNavigate()
   const cart = useSelector((state: RootState) => state.cart)
+  const [name, setName] = useState('')
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key)
@@ -49,9 +50,20 @@ export default function Header() {
     },
   ];
 
-  const clickitem = (e: any) => {
-    console.log(e, 'keytest')
-  }
+  useEffect(() => {
+    function handleKeyDown(event: any) {
+      if (event.keyCode === 13) {
+        navigator('/category', {
+          state: name
+        })
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [name]);
+
 
   return (
     <Row gutter={12} className='header-container'>
@@ -65,7 +77,7 @@ export default function Header() {
         />
       </Col>
       <Col xs={12} md={6} className='input-search'>
-        <Input.Search className='input' onClick={clickitem} />
+        <Input.Search className='input' value={name} onChange={(e) => setName(e.target.value)}/>
       </Col>
       <Col xs={2} md={14}>
         <Menu

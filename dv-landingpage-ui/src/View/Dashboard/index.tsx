@@ -5,6 +5,7 @@ import ListCategory from "./ListCategory";
 import SildeDashboard from './Silde';
 import ListProduct from './ListProduct';
 import ListBranch from './ListBranch';
+import ListProductTrending from './ListProductTrending';
 export default function Dashboard() {
   const _renderContenSlide = () => {
     return (
@@ -20,7 +21,7 @@ export default function Dashboard() {
   }
   const _renderListProduct = () => {
     return <div className='landingpage-content'>
-      <h5>SẢN PHẨM</h5>
+      <h5>DANH MỤC SẢN PHẨM</h5>
       <ListProduct />
     </div>
   }
@@ -30,9 +31,19 @@ export default function Dashboard() {
       <ListBranch />
     </div>
   }
+
+  const _renderProductTrending = () => {
+    return (
+      <div className='landingpage-content'>
+        <h5>SẢN PHẨM BÁN CHẠY</h5>
+        <ListProductTrending />
+      </div>
+    )
+  }
   return (
     <div className="dashboard-container">
       {_renderContenSlide()}
+      {_renderProductTrending()}
       {_renderListProduct()}
       {_renderListBranch()}
       <FloatButton.BackTop />

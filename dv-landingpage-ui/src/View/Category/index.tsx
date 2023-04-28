@@ -11,19 +11,21 @@ import { RootState } from '../../redux/reducer'
 import { updateCart } from '../../redux/action/cart'
 import { SearchOutlined } from '@ant-design/icons'
 import { CategoryResponse } from '../../dataType/category'
-import { CheckboxValueType } from 'antd/es/checkbox/Group'
+import { useLocation, useParams } from 'react-router-dom'
 
 export default function Category() {
   const [listProduct, setListProduct] = useState<ProductResponse[]>([])
+  const location = useLocation()
+  const param: any = useParams()
   const cart: CartRequest = useSelector((state: RootState) => state.cart)
   const userInfo = useSelector((state: RootState) => state.auth)
   const [page, setPage] = useState(1)
   const [size, setSize] = useState(12)
   const [total, setTotal] = useState(0)
   const dispatch = useDispatch()
-  const [productName, setProductName] = useState('')
+  const [productName, setProductName] = useState(location.state ? location.state : '')
   const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
-  const [listCate, setListCate] = useState<number[]>([])
+  const [listCate, setListCate] = useState<number[]>([param.id])
 
   useEffect(() => {
     getAllProduct()
@@ -37,7 +39,7 @@ export default function Category() {
     try {
       const res = await api.category.getAllCategory()
       setListCategory(res.data)
-      setListCate(res.data.map((item: any) => {
+      setListCate( res.data.map((item: any) => {
         return item.id
       }))
     } catch (err) { }
@@ -109,7 +111,7 @@ export default function Category() {
 
   const _renderCheckBoxGroup = () => {
     return (
-      <Checkbox.Group style={{ width: '100%' }} onChange={onChangeCheckGroup}>
+      <Checkbox.Group style={{ width: '100%' }} onChange={onChangeCheckGroup} defaultValue={param.id ? [param.id] : listCate}>
         <Row>
           {listCategory.map((item: CategoryResponse, index: number) => {
             return (

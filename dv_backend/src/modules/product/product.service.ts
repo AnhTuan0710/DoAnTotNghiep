@@ -94,6 +94,7 @@ export class ProductService {
       .select('SUM(ddo.quantity)', 'total_sale')
       .addSelect('dv_product.*')
       .where('dv_product.active_flg != 0')
+      .andWhere('dv_product.status != 0')
       .groupBy('dv_product.id')
       .orderBy('total_sale', 'DESC');
     return queryBuilder.getRawMany()

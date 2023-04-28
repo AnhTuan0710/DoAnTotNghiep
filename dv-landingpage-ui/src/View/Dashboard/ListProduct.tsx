@@ -1,5 +1,5 @@
 import { Badge, Col, Row, notification } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import { useEffect, useState } from "react";
 import { CategoryWithProduct } from "../../dataType/category";
@@ -14,6 +14,7 @@ export default function ListProduct() {
   const cart: CartRequest = useSelector((state: RootState) => state.cart)
   const userInfo = useSelector((state: RootState) => state.auth)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
     getAllCategoryWithProduct()
@@ -49,34 +50,36 @@ export default function ListProduct() {
       dispatch(updateCart(cartNew))
     }
   }
+
   return (
     <div className="product-container">
-      {listCategory.map((item: CategoryWithProduct) => {
-        return <>
-          <div className="header">
-            <p className="name-category">{item.name}</p>
-            <Link to=''><p className="fst-italic">Xem tất cả</p></Link>
-          </div>
-          <Row gutter={24}>
-            {item.products.map((item: ProductResponse, index: number) => {
-              if (index < 6) return <Col xs={12} md={8} lg={6} xl={4} key={index}>
-                {item.status ?
-                  <ProductCard
-                    productInfo={item}
-                    addProductToCart={addProductToCart}
-                  />
-                  :
-                  <Badge.Ribbon text="Ngừng kinh doanh" color='red'>
+      {listCategory.map((item: CategoryWithProduct, index: number) => {
+        if (index < 5)
+          return <div key={index}>
+            <div className="header">
+              <p className="name-category">{item.name}</p>
+              <Link to={`/category/${item.id}`}><p className="fst-italic">Xem tất cả</p></Link>
+            </div>
+            <Row gutter={24}>
+              {item.products.map((item: ProductResponse, index: number) => {
+                if (index < 6) return <Col xs={12} md={8} lg={6} xl={4} key={index}>
+                  {item.status ?
                     <ProductCard
                       productInfo={item}
                       addProductToCart={addProductToCart}
                     />
-                  </Badge.Ribbon>
-                }
-              </Col>
-            })}
-          </Row>
-        </>
+                    :
+                    <Badge.Ribbon text="Ngừng kinh doanh" color='red'>
+                      <ProductCard
+                        productInfo={item}
+                        addProductToCart={addProductToCart}
+                      />
+                    </Badge.Ribbon>
+                  }
+                </Col>
+              })}
+            </Row>
+          </div>
       })}
     </div>
   )

@@ -3,11 +3,13 @@ import { GoldOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import api from '../../api';
 import { CategoryResponse } from '../../dataType/category';
+import { useNavigate } from 'react-router-dom';
 
 export default function ListCategory() {
   const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
+  const natigate = useNavigate()
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
+    natigate(`/category/${e.key}`, )
   };
 
   useEffect(() => {

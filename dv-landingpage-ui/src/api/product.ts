@@ -6,4 +6,8 @@ export default {
     const url = `/products?page=${page}&size=${size}`;
     return await client.post(url, data)
   },
+  async getProductTrending() {
+    const url = `/products/trending`;
+    return await client.get(url)
+  }
 }
