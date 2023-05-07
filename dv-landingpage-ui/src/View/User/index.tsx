@@ -67,20 +67,20 @@ export default function User() {
     return (
       <div className="image-icon-user">
         <img src={ICON_USER} alt='user' style={{ width: '64px' }} />
-        <h4>{infoUser.name}</h4>
+        <h4>{infoUser.name? infoUser.name: 'Chưa đăng nhập'}</h4>
         <Row className='mt-3'>
           <Col xs={12}>
             <img src={ICON_CALENDAR} alt='user' style={{ width: '40px' }} />
             <h6>Ngày tham gia</h6>
-            {moment(infoUser.create_date).format('DD/MM/YYYY')}
+            {infoUser.name  ? moment(infoUser.create_date).format('DD/MM/YYYY'): 'Chưa có thông tin'}
           </Col>
           <Col xs={12}>
             <img src={ICON_DRIVER} alt='user' style={{ width: '40px' }} />
             <h6> Tổng đơn hàng</h6>
-            {listOrder}
+            {infoUser.name ? listOrder: 'Chưa có thông tin'}
           </Col>
         </Row>
-        <Button type='primary' className='mt-5' onClick={handleLogOut}>Đăng xuất</Button>
+        <Button type='primary' className='mt-5' onClick={handleLogOut}>{infoUser.name? 'Đăng xuất': 'Đăng nhập'}</Button>
       </div>
     )
   }

@@ -1,1 +1,0 @@
-export const ICON_LOGO = require('./image/hammer.png')

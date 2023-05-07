@@ -128,7 +128,7 @@ export default class SignUp extends Component {
           <div className="header-col header-nav">
             <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
               {_renderMenuItem('1', '/rivew-page', TEMPLATE, 'Tổng quan')}
-              {_renderMenuItem('2', '/sign-up', SIGNUP, 'Đăng kí')}
+              {/* {_renderMenuItem('2', '/sign-up', SIGNUP, 'Đăng kí')} */}
               {_renderMenuItem('3', '/sign-in', SINGIN, 'Đăng nhập')}
             </Menu>
           </div>

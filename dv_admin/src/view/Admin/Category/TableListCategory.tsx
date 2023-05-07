@@ -89,13 +89,13 @@ export default function TableListCategory(props: Props) {
       align: 'center',
       render: renderStatus
     },
-    {
-      title: 'Chi tiết',
-      dataIndex: 'detail',
-      key: 'detail',
-      align: 'center',
-      render: renderDetail
-    },
+    // {
+    //   title: 'Chi tiết',
+    //   dataIndex: 'detail',
+    //   key: 'detail',
+    //   align: 'center',
+    //   render: renderDetail
+    // },
     {
       title: 'Xóa',
       dataIndex: 'remove',

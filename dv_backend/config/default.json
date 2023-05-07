@@ -11,9 +11,9 @@
   "mail_config": {
     "host": "smtp.gmail.com",
     "port": 465,
-    "user": "tirukit@gmail.com",
-    "pass": "lvztmjmapwpgakpq",
-    "from": "tirukit@gmail.com",
+    "user": "anhtuanbarca@gmail.com",
+    "pass": "cqeuppmazrjpjeex",
+    "from": "anhtuanbarca@gmail.com",
     "secure": true
   },
   "database": {

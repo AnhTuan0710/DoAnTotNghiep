@@ -11,10 +11,13 @@ import moment from "moment";
 import { DateUtils } from "../../Untils/DateUtils";
 import { checkStatus } from "../../Untils/status";
 import { FileSearchOutlined } from '@ant-design/icons'
+import ModalOrderDetail from "./ModalOrderDetail";
 export function Order() {
   const useInfo = useSelector((state: RootState) => state.auth)
   const [listInvoice, setListInvoice] = useState<OrderRespose[]>([])
   const [loadingTable, setloadingTable] = useState(false)
+  const [modalDetailInvoice, setModalDetailInvoice] = useState(false)
+  const [invoiceInfoDetail, setInvoiceInfoDetail] = useState<OrderRespose>()
   useEffect(() => {
     getAllOrder()
   }, [])
@@ -23,7 +26,7 @@ export function Order() {
     setloadingTable(true)
     try {
       const res = await api.order.getAllOrderByUser(useInfo.id)
-      setListInvoice(res.data)
+      setListInvoice(res.data.reverse())
     } catch (err) {
     } finally {
       setloadingTable(false)
@@ -38,7 +41,8 @@ export function Order() {
   }
 
   const handleOnRowTable = (record: OrderRespose) => {
-
+    setInvoiceInfoDetail(record)
+    setModalDetailInvoice(true)
   }
 
   const _renderDetail = (text: number, record: OrderRespose, index: number) => {
@@ -165,6 +169,15 @@ export function Order() {
         items={items}
         color="black"
       />
+
+      {modalDetailInvoice && invoiceInfoDetail &&
+        <ModalOrderDetail
+          onCancel={() => setModalDetailInvoice(false)}
+          onOk={() => setModalDetailInvoice(false)}
+          invoiceInfo={invoiceInfoDetail}
+          getListOrder={getAllOrder}
+        />
+      }
     </div>
   )
 }

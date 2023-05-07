@@ -101,13 +101,13 @@ export default function Product() {
       key: 'create_date',
       render: text => <a>{moment(text).format(DateUtils.DATE_TIME)}</a>,
     },
-    {
-      title: 'Chi tiết',
-      dataIndex: 'detail',
-      key: 'detail',
-      align: 'center',
-      render: _renderDetail,
-    },
+    // {
+    //   title: 'Chi tiết',
+    //   dataIndex: 'detail',
+    //   key: 'detail',
+    //   align: 'center',
+    //   render: _renderDetail,
+    // },
     {
       title: 'Xóa',
       dataIndex: 'delete',
@@ -131,10 +131,10 @@ export default function Product() {
       <div className='header-category'>
         <div className='title-category'>
           <h4>Khách hàng</h4>
-          <Button className='button' onClick={() => setShowModalAddCustomer(true)}>
+          {/* <Button className='button' onClick={() => setShowModalAddCustomer(true)}>
             <PlusCircleOutlined />
             Thêm mới
-          </Button>
+          </Button> */}
         </div>
         <Input
           className="header-search"

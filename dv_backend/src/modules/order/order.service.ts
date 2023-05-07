@@ -1,11 +1,13 @@
 import { OrderDetail } from './../../models/orderDetail';
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from "../../models/order.entity";
 import { Repository } from "typeorm";
 import { CreateOrderDto, UpdateOrderDto } from "../../dto/order.dto";
 import { Product } from "../../models/product.entity";
 import { User } from "../../models/user.entity";
+import { MailService } from '../mail/mail.service';
+import { AuthController } from '../auth/auth.controller';
 
 @Injectable()
 export class OrderService {
@@ -16,9 +18,9 @@ export class OrderService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
     @InjectRepository(OrderDetail)
     private readonly orderDetailRepository: Repository<OrderDetail>,
+    private mailService: MailService,
   ) { }
 
   async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
@@ -46,6 +48,12 @@ export class OrderService {
     const products = await this.productRepository.findByIds(ids);
     order.products = products;
     await this.orderRepository.save(order);
+    try {
+      await this.mailService.sendCreateOrderEmail(user.name, user.email,createOrderDto);
+      console.log('Create email order successly')
+    } catch (error) {
+      console.log('ERROR: Không gửi được email ', error)
+    }
     return order;
   }
 

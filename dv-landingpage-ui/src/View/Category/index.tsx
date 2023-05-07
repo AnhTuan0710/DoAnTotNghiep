@@ -25,7 +25,7 @@ export default function Category() {
   const dispatch = useDispatch()
   const [productName, setProductName] = useState(location.state ? location.state : '')
   const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
-  const [listCate, setListCate] = useState<number[]>([param.id])
+  const [listCate, setListCate] = useState<number[]>([])
 
   useEffect(() => {
     getAllProduct()

@@ -11,13 +11,16 @@ import { OrderCreateNew } from '../../dataType/order'
 import api from '../../api'
 import { useNavigate } from 'react-router-dom'
 import { EditOutlined } from '@ant-design/icons';
+import { useState } from 'react'
 export default function Cart() {
   const cart: CartRequest = useSelector((state: RootState) => state.cart)
   const userInfo = useSelector((state: RootState) => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   const handleCreateInvoice = async () => {
+    setLoading(true)
     try {
       const data: OrderCreateNew = {
         totalAmount: cart.totalAmount,
@@ -29,6 +32,14 @@ export default function Cart() {
             quantity: item.quantity
           }
         })
+      }
+      if(!userInfo.name){
+        notification.warning({
+          message: 'Thông báo',
+          description: 'Bạn cần đăng nhập để hoàn thành đơn hàng!'
+        })
+        setLoading(false)
+        return 
       }
       await api.order.createNewOrder(data)
       notification.success({
@@ -42,6 +53,8 @@ export default function Cart() {
         message: 'Thông báo',
         description: "Tạo đơn hàng thất bại"
       })
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -177,6 +190,7 @@ export default function Cart() {
           style={{ marginBottom: '30px',fontWeight: 700 }}
           size='large'
           disabled={cart.productIds.length === 0}
+          loading={loading}
         >
           TẠO ĐƠN
         </Button>

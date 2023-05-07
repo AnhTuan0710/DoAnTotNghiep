@@ -36,13 +36,13 @@ export default function FooterLayout() {
           <h5>BẢN ĐỒ</h5>
           <hr />
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.2385492123576!2d105.7713691758646!3d21.023138987970484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454aef9e4ee2f%3A0x9e0873fb6f91fad6!2zMzIyIE3hu7kgxJDDrG5oIDEsIE3hu7kgxJDDrG5oLCBU4burIExpw6ptLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1682586994714!5m2!1svi!2s"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.238549212317!2d105.7713691750003!3d21.023138987972093!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454aef9e4ee2f%3A0x9e0873fb6f91fad6!2zMzIyIE3hu7kgxJDDrG5oIDEsIE3hu7kgxJDDrG5oLCBU4burIExpw6ptLCBIw6AgTuG7mWksIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1683113415050!5m2!1svi!2s"
             width="100%"
-            style={{ border: 0, minHeight: 250 }}
-            allowFullScreen={true}
+            height="250"
+            style={{border:'0'}}
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+            referrerPolicy="no-referrer-when-downgrade">
+          </iframe>
         </Col>
       </Row>
       <div className='footer-copyright'>

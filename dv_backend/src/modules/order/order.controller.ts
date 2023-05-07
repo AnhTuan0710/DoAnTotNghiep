@@ -3,11 +3,15 @@ import { OrderService } from './order.service';
 import { Order } from '../../models/order.entity';
 import { CreateOrderDto, UpdateOrderDto } from '../../dto/order.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { MailService } from '../mail/mail.service';
 
 @Controller('orders')
 @ApiTags('orders')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) { }
+  constructor(
+    private readonly orderService: OrderService,
+    private mailService: MailService,
+    ) { }
   
   @Get('total-by-day')
   async getToByDay(): Promise<{ date: string; total: number }[]> {
