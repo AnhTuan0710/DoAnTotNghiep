@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from '../../models/order.entity';
 import { CreateOrderDto, UpdateOrderDto } from '../../dto/order.dto';
@@ -8,14 +8,19 @@ import { MailService } from '../mail/mail.service';
 @Controller('orders')
 @ApiTags('orders')
 export class OrderController {
-  constructor(
-    private readonly orderService: OrderService,
-    private mailService: MailService,
-    ) { }
-  
-  @Get('total-by-day')
-  async getToByDay(): Promise<{ date: string; total: number }[]> {
-    return await this.orderService.getTotalByDay();
+  constructor(private readonly orderService: OrderService) { }
+
+  @Get('total-by-time')
+  async getToByDay(
+    @Query('time') time: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ): Promise<{ time: string; total: number }[]> {
+    if (time === 'day') {
+      return await this.orderService.getTotalByDay(startDate,endDate);
+    } else {
+      return await this.orderService.getTotalByMonth(startDate,endDate);
+    }
   }
 
   @Get()

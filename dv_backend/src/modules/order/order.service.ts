@@ -120,15 +120,32 @@ export class OrderService {
     return this.orderRepository.find({ where: { user: user }, relations: ['user', 'products', 'orderDetails'] });
   }
 
-  async getTotalByDay(): Promise<{ date: string; total: number }[]> {
+  async getTotalByDay(startDate: string ,endDate: string ): Promise<{ time: string; total: number }[]> {
     const result = await this.orderRepository
       .createQueryBuilder('dv_order')
-      .select('DATE(dv_order.create_date) as date')
+      .select('DATE(dv_order.create_date) as time')
       .addSelect('SUM(dv_order.totalAmount) as total')
+      .addSelect('COUNT(dv_order.id) as total_invoice')
+      .where(`dv_order.create_date >= :startDate AND dv_order.create_date <= :endDate`, { startDate, endDate })
       .groupBy('DATE(dv_order.create_date)')
       .orderBy('DATE(dv_order.create_date)')
       .getRawMany();
 
-    return result.map((item) => ({ date: item.date, total: parseFloat(item.total) }));
+    return result.map((item) => ({ time: item.time, total: parseFloat(item.total), total_invoice: parseFloat(item.total_invoice) }));
   }
+
+  async getTotalByMonth(startDate: string ,endDate: string): Promise<{ time: string; total: number }[]> {
+    const result = await this.orderRepository
+      .createQueryBuilder('dv_order')
+      .select('MONTH(dv_order.create_date) as time')
+      .addSelect('SUM(dv_order.totalAmount) as total')
+      .addSelect('COUNT(dv_order.id) as total_invoice')
+      .where(`dv_order.create_date >= :startDate AND dv_order.create_date <= :endDate`, { startDate, endDate })
+      .groupBy('MONTH(dv_order.create_date)')
+      .orderBy('MONTH(dv_order.create_date)')
+      .getRawMany();
+
+    return result.map((item) => ({ time: item.time, total: parseFloat(item.total), total_invoice: parseFloat(item.total_invoice) }));
+  }
+
 }
