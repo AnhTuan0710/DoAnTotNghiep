@@ -33,3 +33,9 @@ export interface UserUpdateDto {
   phone_no: string,
   name: string,
 }
+
+export interface ChangePassword {
+  email: string,
+  pwold: string, 
+  pwnew: string,
+}

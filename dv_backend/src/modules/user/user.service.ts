@@ -3,9 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { UpdateUserDto } from '../../dto/user.dto';
 import { User } from '../../models/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
+  update(id: any, user: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(User)
     private readonly usersService: Repository<User>
@@ -47,8 +51,12 @@ export class UsersService {
     if (updateUserDto.phone_no) {
       user.phone_no = updateUserDto.phone_no
     }
+    if (updateUserDto.password) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(updateUserDto.password, salt);
+      user.password = hashedPassword
+    }
     user.update_date = new Date()
-
     return this.usersService.update(id, user)
   }
 }

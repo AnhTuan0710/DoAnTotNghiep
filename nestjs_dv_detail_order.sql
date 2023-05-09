@@ -1,0 +1,57 @@
+-- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: nestjs
+-- ------------------------------------------------------
+-- Server version	8.0.32
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `dv_detail_order`
+--
+
+DROP TABLE IF EXISTS `dv_detail_order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dv_detail_order` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `orderId` int NOT NULL,
+  `productId` int NOT NULL,
+  `quantity` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_e7f9e643d03fb137b647b0a1671` (`orderId`),
+  KEY `FK_c4a75fa243ac28acd6b38db4095` (`productId`),
+  CONSTRAINT `FK_c4a75fa243ac28acd6b38db4095` FOREIGN KEY (`productId`) REFERENCES `dv_product` (`id`),
+  CONSTRAINT `FK_e7f9e643d03fb137b647b0a1671` FOREIGN KEY (`orderId`) REFERENCES `dv_order` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dv_detail_order`
+--
+
+LOCK TABLES `dv_detail_order` WRITE;
+/*!40000 ALTER TABLE `dv_detail_order` DISABLE KEYS */;
+INSERT INTO `dv_detail_order` VALUES (1,1,1,2),(2,1,2,2),(3,1,3,1),(4,2,2,1),(6,3,2,1),(7,3,14,1),(8,3,4,3),(9,4,2,1),(10,4,14,1),(11,4,4,3),(12,5,4,4),(13,5,17,2),(14,5,12,6),(15,5,22,1),(16,5,19,2),(17,6,4,4),(18,6,17,2),(19,6,12,6),(20,6,22,1),(21,7,4,2),(22,7,17,4),(23,7,22,1),(24,8,10,1),(25,8,11,1),(26,8,17,1),(27,9,30,4),(28,9,29,1),(29,9,28,1),(30,10,3,3),(31,10,10,4),(32,10,22,1),(33,11,4,1),(34,11,10,1),(35,11,11,1),(36,11,3,1),(37,11,17,1),(38,12,1,1),(39,12,2,1),(40,14,2,1),(41,14,10,1),(42,14,14,1),(43,14,13,1),(44,14,17,1),(45,14,18,1),(46,14,16,1),(47,14,22,1),(48,14,21,1),(49,14,20,1),(50,14,19,1),(51,15,4,3),(52,15,10,1),(53,15,22,1),(54,15,23,1),(55,15,24,1),(56,16,4,1),(57,16,10,1),(58,16,17,1),(59,17,23,1),(60,17,24,1),(61,18,16,1),(62,18,17,1),(63,19,4,1),(64,19,17,1),(65,19,18,1),(66,19,10,1),(67,20,10,1),(68,20,17,1),(69,21,10,2),(70,22,10,2),(71,23,17,1),(72,23,12,1),(73,23,2,1),(74,23,22,3),(75,24,4,1),(76,24,17,1),(77,25,4,1),(78,25,17,1),(79,26,17,1),(80,27,10,1),(81,28,17,1),(82,29,12,1),(83,30,19,1),(84,31,10,1),(85,32,22,1),(86,33,2,1),(87,34,2,1),(88,35,2,1),(89,36,17,1),(90,37,12,1),(91,38,10,1),(92,39,10,1),(93,40,4,1),(94,41,4,3),(95,41,12,1),(96,42,10,1),(97,42,12,1),(98,42,2,1),(99,43,17,4),(100,43,10,2),(101,43,2,2),(102,44,4,1),(103,44,17,1),(104,44,10,1),(105,45,4,1),(106,45,12,1),(107,45,13,1),(108,45,17,1),(109,45,18,1),(110,46,2,1),(111,46,4,1);
+/*!40000 ALTER TABLE `dv_detail_order` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2023-05-09 12:34:40

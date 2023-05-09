@@ -1,5 +1,6 @@
+import { ChangePassword } from './../../dto/user.dto';
 import { Controller, Post, Body, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { RegisterDto } from '../../dto/register.dto';
+import { ChangePWDto, RegisterDto } from '../../dto/register.dto';
 import { MailService } from '../mail/mail.service';
 import { UsersService } from '../user/user.service';
 import { AuthService } from './auth.service';
@@ -47,5 +48,10 @@ export class AuthController {
       status: HttpStatus.OK,
       message: 'Sign up successfully',
     };
+  }
+
+  @Post('change')
+  async changePassword(@Body() req: ChangePWDto) {
+    return this.authService.changePass(req.email, req.pwold, req.pwnew);
   }
 }

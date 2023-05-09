@@ -43,4 +43,12 @@ export class AuthService {
       return null;
     }
   }
+
+  async changePass(email: string, pwold: string, pwnew: string) {
+    const dbUser = await this.usersService.findOne(email);
+    if (dbUser && await bcrypt.compare(pwold, dbUser.password)) {
+      return this.usersService.updateInfoUser(dbUser.id,{password: pwnew} )
+    }
+    throw new UnauthorizedException('Mật khẩu cũ không chính xác');
+  }
 }

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { LoginParam, RegisterParam, UserParam } from "../dataType/user";
+import { ChangePassword, LoginParam, RegisterParam, UserParam } from "../dataType/user";
 import client from "./apiConfig";
 
 export default {
@@ -20,5 +20,9 @@ export default {
       },
     };
     return await axios.get(url, config)
+  },
+  async changePW(data: ChangePassword) {
+    const url = `/auth/change`;
+    return await client.post(url, data)
   }
 }

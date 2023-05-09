@@ -42,7 +42,7 @@ function Sidenav() {
       </div>
       <hr />
       <Menu theme="light" mode="inline">
-        {_renderMenuItem('1', '/dashboard', "dashboard", <BankOutlined />, 'Tổng quan')}
+        {/* {_renderMenuItem('1', '/dashboard', "dashboard", <BankOutlined />, 'Tổng quan')} */}
         <Menu.Item className="menu-item-header" key="11">HÓA ĐƠN </Menu.Item>
         {_renderMenuItem('2', '/invoice', "invoice", <FileDoneOutlined />, 'Hóa đơn')}
         <Menu.Item className="menu-item-header" key="12">DANH MỤC</Menu.Item>

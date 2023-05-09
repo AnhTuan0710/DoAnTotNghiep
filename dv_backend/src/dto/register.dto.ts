@@ -26,3 +26,10 @@ export class RegisterDto {
   })
   password: string;
 }
+
+
+export class ChangePWDto {
+  email: string
+  pwold: string
+  pwnew: string
+}

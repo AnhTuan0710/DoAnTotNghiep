@@ -22,6 +22,14 @@ export default function Cart() {
   const handleCreateInvoice = async () => {
     setLoading(true)
     try {
+      if(!userInfo.phone_no || !userInfo.address) {
+        notification.warning({
+          message: "Thông báo",
+          description: "Yêu cầu nhập đầy đủ thông tin"
+        })
+        setLoading(false)
+        return
+      }
       const data: OrderCreateNew = {
         totalAmount: cart.totalAmount,
         orderNumber: cart.orderNumber,
