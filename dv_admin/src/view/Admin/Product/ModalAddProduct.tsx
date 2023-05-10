@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, InputNumber, Modal, notification, Row, Select } from 'antd'
-import { ProductCreateDto } from '../../../dataType/product';
+import { ProductCreateDto, ProductResponse } from '../../../dataType/product';
 import { CategoryResponse } from '../../../dataType/category';
 import api from '../../../api';
 
@@ -12,9 +12,9 @@ type Props = {
 }
 const { Option } = Select
 export default function ModalAddProduct(props: Props) {
-  const { title, handleOk, handleCancel, listCategory, getListCate} = props
+  const { title, handleOk, handleCancel, listCategory, getListCate } = props
   const onFinish = async (data: ProductCreateDto) => {
-    try{
+    try {
       await api.product.createNewProduct(data)
       notification.success({
         message: 'Thông báo',
@@ -22,7 +22,7 @@ export default function ModalAddProduct(props: Props) {
       })
       handleCancel()
       getListCate()
-    }catch(err){
+    } catch (err) {
       notification.error({
         message: 'Thông báo',
         description: 'Tạo sản phẩm mới thất bại!'
@@ -30,7 +30,7 @@ export default function ModalAddProduct(props: Props) {
     }
   }
   const onFinishFailed = (e: any) => {
-   
+
   }
 
   const _renderFormInputItem = (label: string, name: string, message: string, required: boolean) => {
@@ -70,8 +70,8 @@ export default function ModalAddProduct(props: Props) {
           rules={[{ required: true, message: 'Nhập loại danh mục!' }]}
         >
           <Select placeholder="Nhập loại danh mục">
-            {listCategory.map((item: CategoryResponse) => {
-              return <Option value={item.id}>{item.name}</Option>
+            {listCategory.map((item: CategoryResponse, index: number) => {
+              return <Option value={item.id} key={index}>{item.name}</Option>
             })}
           </Select>
         </Form.Item>

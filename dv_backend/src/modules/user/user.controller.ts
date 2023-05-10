@@ -1,5 +1,5 @@
 import { UsersService } from './user.service';
-import { Controller, UseGuards, Get, Query, Request, Put, Param, Body } from '@nestjs/common';
+import { Controller, UseGuards, Get, Query, Request, Put, Param, Body, Delete } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -32,5 +32,10 @@ export class UserController {
   @Put(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UpdateResult> {
     return await this.userService.updateInfoUser(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<void> {
+    await this.userService.delete(id);
   }
 }

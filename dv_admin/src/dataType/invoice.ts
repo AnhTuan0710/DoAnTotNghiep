@@ -1,3 +1,5 @@
+import { CustomerResponse } from "./custormer";
+
 export interface InvoiceType {
   invoice_cd: string,
   customer_cd: string,
@@ -13,7 +15,7 @@ export interface ProductInvoice {
   price: number,
   quanlity: number
 }
-export interface InvoiceRespose {
+export interface InvoiceResponse {
   active_flg: number,
   create_date: string,
   id: number,
@@ -22,7 +24,7 @@ export interface InvoiceRespose {
   status: number,
   totalAmount: number,
   update_date: string,
-  user: any,
+  user: CustomerResponse,
   orderDetails: any[],
 }
 

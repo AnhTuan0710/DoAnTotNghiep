@@ -1,25 +1,26 @@
-import { DeleteOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
+import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { Button, Input, Pagination, notification } from 'antd'
-import { CategoryResponse, CategoryType } from '../../../dataType/category';
+import { CategoryResponse, } from '../../../dataType/category';
 import { ProductResponse } from '../../../dataType/product';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import TableListProduct from '../../../components/TableListProduct';
-import ModalProductDetail from './ModalAddProduct';
 import api from '../../../api';
 import './product.scss'
 import { LIMIT, PAGE_DEFAULT } from '../../../constants';
+import ModalAddProduct from './ModalAddProduct';
+import ModalProductDetail from './ModalDetailProduct';
 
 export default function Customer() {
-  const navigate = useNavigate()
   const [productName, setProductName] = useState('')
   const [showModalAddProduct, setShowModalAddProduct] = useState(false)
+  const [showModalDetailProduct, setShowModalDetailProduct] = useState(false)
   const [loading, setLoading] = useState(false)
   const [listProduct, setListProduct] = useState<ProductResponse[]>([])
   const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
   const [page, setPage] = useState(PAGE_DEFAULT)
   const [size, setSize] = useState(LIMIT)
   const [total, setTotal] = useState(0)
+  const [productActive, setProductActive] = useState<ProductResponse>()
 
   useEffect(() => {
     function handleKeyDown(event: any) {
@@ -97,6 +98,11 @@ export default function Customer() {
     setSize(pageSize)
   }
 
+  const showDetail = (data: ProductResponse) => {
+    setShowModalDetailProduct(true)
+    setProductActive(data)
+  }
+
   const _renderTableProduct = () => {
     return (
       <div className='list-category-container'>
@@ -104,6 +110,7 @@ export default function Customer() {
           listProduct={listProduct}
           loadingTable={loading}
           getListProduct={getAllProduct}
+          detailProduct={showDetail}
         />
         <Pagination
           defaultPageSize={size}
@@ -113,7 +120,7 @@ export default function Customer() {
           onChange={onChange}
           showSizeChanger
           className='my-1'
-          style={{float: 'right'}}
+          style={{ float: 'right' }}
           showTotal={(total) => `Tổng số ${total} sản phẩm`}
         />;
       </div>
@@ -124,12 +131,22 @@ export default function Customer() {
       {_renderHeaderProduct()}
       {_renderTableProduct()}
       {showModalAddProduct &&
-        <ModalProductDetail
+        <ModalAddProduct
           title='Thêm sản phẩm mới'
           handleCancel={() => setShowModalAddProduct(false)}
           handleOk={() => { }}
           listCategory={listCategory}
           getListCate={getAllProduct}
+        />
+      }
+      {showModalDetailProduct && productActive &&
+        <ModalProductDetail
+          title={'Chi tiết sản phẩm'}
+          handleOk={() => setShowModalDetailProduct(false)}
+          handleCancel={() => setShowModalDetailProduct(false)}
+          listCategory={listCategory}
+          getListCate={getAllProduct}
+          product={productActive}
         />
       }
     </div>

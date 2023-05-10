@@ -25,3 +25,9 @@ export class ProductOrderDto {
   id: number;
   quantity: number;
 }
+
+export class ReportRenuave {
+  time: string | number;
+  total: number;
+  total_invoice: number;
+}

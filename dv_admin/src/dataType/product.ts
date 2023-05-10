@@ -48,5 +48,6 @@ export interface ProductCreateDto {
   unit: string,
   weight: string,
   description: string,
-  categoryId: number
+  categoryId: number,
+  status: number,
 }

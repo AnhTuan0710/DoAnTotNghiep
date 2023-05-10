@@ -1,13 +1,14 @@
 import { OrderDetail } from './../../models/orderDetail';
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from "../../models/order.entity";
 import { Repository } from "typeorm";
-import { CreateOrderDto, UpdateOrderDto } from "../../dto/order.dto";
+import { CreateOrderDto, ReportRenuave, UpdateOrderDto } from "../../dto/order.dto";
 import { Product } from "../../models/product.entity";
 import { User } from "../../models/user.entity";
 import { MailService } from '../mail/mail.service';
-import { AuthController } from '../auth/auth.controller';
+import { addDays, format, parseISO } from 'date-fns';
+import * as moment from 'moment';
 
 @Injectable()
 export class OrderService {
@@ -49,7 +50,7 @@ export class OrderService {
     order.products = products;
     await this.orderRepository.save(order);
     try {
-      await this.mailService.sendCreateOrderEmail(user.name, user.email,createOrderDto);
+      await this.mailService.sendCreateOrderEmail(user.name, user.email, createOrderDto);
       console.log('Create email order successly')
     } catch (error) {
       console.log('ERROR: Không gửi được email ', error)
@@ -117,35 +118,79 @@ export class OrderService {
 
   async findByUserId(userId: number): Promise<Order[]> {
     const user = await this.userRepository.findOne({ where: { id: userId, active_flg: 1 } });
-    return this.orderRepository.find({ where: { user: user }, relations: ['user', 'products', 'orderDetails'] });
+    return this.orderRepository.find({ where: { user: user, active_flg: 1 }, relations: ['user', 'products', 'orderDetails'] });
   }
 
-  async getTotalByDay(startDate: string ,endDate: string ): Promise<{ time: string; total: number }[]> {
-    const result = await this.orderRepository
+  async getTotalByDay(startDate: string, endDate: string): Promise<ReportRenuave[]> {
+    const start = parseISO(startDate);
+    const end = parseISO(endDate);
+
+    const dateList: string[] = [];
+    let currentDate = start;
+    while (currentDate <= end) {
+      dateList.push(format(currentDate, 'yyyy-MM-dd'));
+      currentDate = addDays(currentDate, 1);
+    }
+    const result: ReportRenuave[] = await this.orderRepository
       .createQueryBuilder('dv_order')
       .select('DATE(dv_order.create_date) as time')
       .addSelect('SUM(dv_order.totalAmount) as total')
       .addSelect('COUNT(dv_order.id) as total_invoice')
       .where(`dv_order.create_date >= :startDate AND dv_order.create_date <= :endDate`, { startDate, endDate })
+      .andWhere('dv_order.active_flg != 0')
       .groupBy('DATE(dv_order.create_date)')
       .orderBy('DATE(dv_order.create_date)')
       .getRawMany();
 
-    return result.map((item) => ({ time: item.time, total: parseFloat(item.total), total_invoice: parseFloat(item.total_invoice) }));
+    let listData: ReportRenuave[] = []
+    dateList.forEach((date: string) => {
+      const dateIndex = result.findIndex((item: ReportRenuave) => moment(item.time).format() === moment(date).format())
+      if (dateIndex !== -1) {
+        listData.push({
+          time: Number(moment(date).format('DD')),
+          total: Number(result[dateIndex].total),
+          total_invoice: Number(result[dateIndex].total_invoice)
+        })
+      } else {
+        listData.push({
+          time: Number(moment(date).format('DD')),
+          total: 0,
+          total_invoice: 0
+        })
+      }
+    })
+    return listData;
   }
 
-  async getTotalByMonth(startDate: string ,endDate: string): Promise<{ time: string; total: number }[]> {
+  async getTotalByMonth(startDate: string, endDate: string): Promise<ReportRenuave[]> {
     const result = await this.orderRepository
       .createQueryBuilder('dv_order')
       .select('MONTH(dv_order.create_date) as time')
       .addSelect('SUM(dv_order.totalAmount) as total')
       .addSelect('COUNT(dv_order.id) as total_invoice')
       .where(`dv_order.create_date >= :startDate AND dv_order.create_date <= :endDate`, { startDate, endDate })
+      .andWhere('dv_order.active_flg != 0')
       .groupBy('MONTH(dv_order.create_date)')
       .orderBy('MONTH(dv_order.create_date)')
       .getRawMany();
-
-    return result.map((item) => ({ time: item.time, total: parseFloat(item.total), total_invoice: parseFloat(item.total_invoice) }));
+    let listData: ReportRenuave[] = []
+    for (let i = 1; i <= 12; i++) {
+      const index = result.findIndex(item => item.time === i)
+      if (index !== -1) {
+        listData.push({
+          time: result[index].time,
+          total: Number(result[index].total),
+          total_invoice: Number(result[index].total_invoice)
+        })
+      } else {
+        listData.push({
+          time: i,
+          total: 0,
+          total_invoice: 0
+        })
+      }
+    }
+    return listData
   }
 
 }

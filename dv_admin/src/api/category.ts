@@ -15,5 +15,9 @@ export default {
   async deleteCategory(id: number) {
     const url = `/categories/${id}`;
     return await client.delete(url)
+  },
+  async updateCategory(id: number, data: { name: string }) {
+    const url = `/categories/${id}`;
+    return await client.put(url, data)
   }
 }

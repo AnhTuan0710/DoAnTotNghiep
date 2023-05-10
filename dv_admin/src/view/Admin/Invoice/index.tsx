@@ -1,24 +1,21 @@
-import { PlusCircleOutlined, SearchOutlined, FileSearchOutlined } from '@ant-design/icons'
-import { Button, Input, notification, Popconfirm, Table, Tag } from 'antd'
+import { SearchOutlined, FileSearchOutlined } from '@ant-design/icons'
+import { Input, notification, Popconfirm, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../../../api';
-import { InvoiceRespose } from '../../../dataType/invoice';
+import { InvoiceResponse } from '../../../dataType/invoice';
 import { DateUtils } from '../../../Ultils/DateFormat';
 import { MoneyFormat } from '../../../Ultils/MoneyFormat';
 import ModalInvoiceDetail from './ModalInvoiceDetail';
 import { DeleteOutlined } from '@ant-design/icons';
 import { checkStatus } from '../../../Ultils/Status';
 export default function Invoice() {
-  const navigate = useNavigate()
   const [loadingTable, setloadingTable] = useState(false)
-  const [invoiceCd, setInvoiceCd] = useState('')
   const [modalDetailInvoice, setModalDetailInvoice] = useState(false)
-  const [invoiceInfoDetail, setInvoiceInfoDetail] = useState<InvoiceRespose>()
+  const [invoiceInfoDetail, setInvoiceInfoDetail] = useState<InvoiceResponse>()
 
-  const [listInvoice, setListInvoice] = useState<InvoiceRespose[]>([])
+  const [listInvoice, setListInvoice] = useState<InvoiceResponse[]>([])
   useEffect(() => {
     getAllInvoice()
   }, [])
@@ -40,14 +37,14 @@ export default function Invoice() {
     }
   }
 
-  const _renderStatus = (text: number, record: InvoiceRespose, index: number) => {
+  const _renderStatus = (text: number, record: InvoiceResponse, index: number) => {
     const status = checkStatus(text)
     return (
       <Tag color={status.color}>{status.name}</Tag>
     )
   }
 
-  const _renderNameCustomer = (text: number, record: InvoiceRespose, index: number) => {
+  const _renderNameCustomer = (text: number, record: InvoiceResponse, index: number) => {
     return (
       <h5>{record.user.name}</h5>
     )
@@ -69,7 +66,7 @@ export default function Invoice() {
     }
   }
 
-  const _renderRemove = (text: number, record: InvoiceRespose, index: number) => {
+  const _renderRemove = (text: number, record: InvoiceResponse, index: number) => {
     return (
       <Popconfirm
         placement="top"
@@ -84,25 +81,25 @@ export default function Invoice() {
     )
   }
 
-  const _renderDetail = (text: number, record: InvoiceRespose, index: number) => {
+  const _renderDetail = (text: number, record: InvoiceResponse, index: number) => {
     return (
       <FileSearchOutlined onClick={() => handleOnRowTable(record)} />
     )
   }
 
-  const _renderIDCustomer = (text: number, record: InvoiceRespose, index: number) => {
+  const _renderIDCustomer = (text: number, record: InvoiceResponse, index: number) => {
     return (
       <h5>{record.user.id}</h5>
     )
   }
 
-  const columns: ColumnsType<InvoiceRespose> = [
+  const columns: ColumnsType<InvoiceResponse> = [
     {
       title: 'STT',
       dataIndex: 'stt',
       key: 'stt',
       width: 20,
-      render: (text: any, record: InvoiceRespose, index: number) => <a>{index + 1}</a>,
+      render: (text: any, record: InvoiceResponse, index: number) => <a>{index + 1}</a>,
     },
     {
       title: 'Mã hóa đơn',
@@ -158,35 +155,17 @@ export default function Invoice() {
       render: _renderRemove,
     },
   ];
-  const handleOnRowTable = (record: InvoiceRespose) => {
+  const handleOnRowTable = (record: InvoiceResponse) => {
     setInvoiceInfoDetail(record)
     setModalDetailInvoice(true)
   }
-  const onchangeNameSearch = (e: any) => {
-    setInvoiceCd(e.target.value)
-    console.log(e.target.value, 'name')
-  }
-  const gotoCreateInvoice = () => {
-    navigate('/invoice/new')
-  }
+
   const _renderHeaderInvoice = () => {
     return (
       <div className='header-category'>
         <div className='title-category'>
           <h4>Hóa đơn</h4>
-          {/* <Button className='button' onClick={gotoCreateInvoice}>
-            <PlusCircleOutlined />
-            Tạo đơn mới
-          </Button> */}
         </div>
-        <Input
-          className="header-search"
-          placeholder="Nhập mã hóa đơn..."
-          value={invoiceCd}
-          onChange={onchangeNameSearch}
-          prefix={<SearchOutlined />}
-          style={{ width: '300px' }}
-        />
       </div>
     )
   }
@@ -194,7 +173,7 @@ export default function Invoice() {
     return (
       <div className='list-category-container'>
         <Table
-          rowKey={'table-category'}
+          rowKey={(record: InvoiceResponse) => `${record.id}`}
           columns={columns}
           dataSource={listInvoice}
           loading={loadingTable}

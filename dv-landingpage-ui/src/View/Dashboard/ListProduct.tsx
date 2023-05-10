@@ -54,7 +54,7 @@ export default function ListProduct() {
   return (
     <div className="product-container">
       {listCategory.map((item: CategoryWithProduct, index: number) => {
-        if (index < 5)
+        if (index < 5 && item.products.length > 0)
           return <div key={index}>
             <div className="header">
               <p className="name-category">{item.name}</p>
@@ -62,7 +62,7 @@ export default function ListProduct() {
             </div>
             <Row gutter={24}>
               {item.products.map((item: ProductResponse, index: number) => {
-                if (index < 6) return <Col xs={12} md={8} lg={6} xl={4} key={index}>
+                if (index < 6 && item.active_flg !== 0) return <Col xs={12} md={8} lg={6} xl={4} key={index}>
                   {item.status ?
                     <ProductCard
                       productInfo={item}
@@ -77,7 +77,8 @@ export default function ListProduct() {
                     </Badge.Ribbon>
                   }
                 </Col>
-              })}
+              }
+              )}
             </Row>
           </div>
       })}

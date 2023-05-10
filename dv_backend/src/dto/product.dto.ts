@@ -1,8 +1,8 @@
 import { Product } from "../models/product.entity";
 
 export class ProductDto {
-  name: string;
-  price: number;
+  name?: string;
+  price?: number;
   image?: string;
   size?: string;
   weight?: string;

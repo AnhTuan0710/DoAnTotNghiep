@@ -38,8 +38,8 @@ export default function Category() {
   const getAllCategory = async () => {
     try {
       const res = await api.category.getAllCategory()
-      setListCategory(res.data)
-      setListCate( res.data.map((item: any) => {
+      setListCategory(res.data.filter((item: CategoryResponse) => item.active_flg !== 0))
+      setListCate(res.data.map((item: any) => {
         return item.id
       }))
     } catch (err) { }
@@ -115,7 +115,7 @@ export default function Category() {
         <Row>
           {listCategory.map((item: CategoryResponse, index: number) => {
             return (
-              <Col xs={24} key={index} className='ps-3 my-2' style={{backgroundColor: '#f1f1f1', borderRadius: '5px'}}>
+              <Col xs={24} key={index} className='ps-3 my-2' style={{ backgroundColor: '#f1f1f1', borderRadius: '5px' }}>
                 <Checkbox value={item.id} className='py-2'>{item.name}</Checkbox>
               </Col>
             )

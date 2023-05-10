@@ -6,6 +6,13 @@ export interface CustomerType {
   amount_debt: number,
 }
 
+export interface CustomerUpdate {
+  name: string, 
+  phone_no: string, 
+  address: string, 
+  password: string,
+}
+
 export interface CustomerResponse {
   active_flg: number,
   address: string,

@@ -23,7 +23,7 @@ export class AuthService {
 
   async login(user: { email: string, password: string }) {
     const dbUser = await this.usersService.findOne(user.email);
-    if (dbUser && await bcrypt.compare(user.password, dbUser.password)) {
+    if (dbUser && dbUser.active_flg !== 0 && await bcrypt.compare(user.password, dbUser.password)) {
       const payload = { email: dbUser.email, sub: dbUser.id };
       return {
         access_token: this.jwtService.sign(payload),
@@ -47,7 +47,7 @@ export class AuthService {
   async changePass(email: string, pwold: string, pwnew: string) {
     const dbUser = await this.usersService.findOne(email);
     if (dbUser && await bcrypt.compare(pwold, dbUser.password)) {
-      return this.usersService.updateInfoUser(dbUser.id,{password: pwnew} )
+      return this.usersService.updateInfoUser(dbUser.id, { password: pwnew })
     }
     throw new UnauthorizedException('Mật khẩu cũ không chính xác');
   }

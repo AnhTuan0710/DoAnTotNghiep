@@ -26,7 +26,7 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[] | undefined> {
-    return await this.usersService.find()
+    return await this.usersService.find({ where: { active_flg: 1 } })
   }
 
   async getUserInfo(id: number): Promise<User | undefined> {
@@ -58,5 +58,10 @@ export class UsersService {
     }
     user.update_date = new Date()
     return this.usersService.update(id, user)
+  }
+
+  async delete(id: number): Promise<void> {
+    const user = await this.usersService.findOne({ where: { id: id } })
+    this.usersService.update(id, { ...user, active_flg: 0 })
   }
 }

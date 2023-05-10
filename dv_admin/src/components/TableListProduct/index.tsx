@@ -4,13 +4,15 @@ import Table, { ColumnsType } from 'antd/es/table';
 import { ProductResponse } from '../../dataType/product';
 import api from '../../api';
 import './table-product.scss'
+import { MoneyFormat } from '../../Ultils/MoneyFormat';
 type Props = {
   loadingTable: boolean;
   listProduct: ProductResponse[],
   getListProduct: () => void
+  detailProduct: (data: ProductResponse) => void
 }
 export default function TableListProduct(props: Props) {
-  const { loadingTable, listProduct, getListProduct } = props
+  const { loadingTable, listProduct, getListProduct, detailProduct } = props
   const handleDeleteProduct = async (e: any, record: ProductResponse) => {
     e.stopPropagation()
     try {
@@ -41,7 +43,7 @@ export default function TableListProduct(props: Props) {
   }
 
   const handleDetailProduct = (record: ProductResponse) => {
-
+    detailProduct(record)
   }
 
   const _renderButtonDetail = (text: any, record: ProductResponse, index: number) => {
@@ -128,7 +130,7 @@ export default function TableListProduct(props: Props) {
       dataIndex: 'price',
       key: 'price',
       align: "right",
-      render: (text) => <div>{text}</div>,
+      render: (text) => <div>{MoneyFormat(text)}</div>,
       width: 20,
     },
     {
@@ -152,12 +154,12 @@ export default function TableListProduct(props: Props) {
   return (
     <>
       <Table
-        rowKey={'table-product'}
         columns={columns}
         dataSource={listProduct}
         loading={loadingTable}
         scroll={{ x: 900 }}
         pagination={false}
+        rowKey={(record: ProductResponse) => `${record.id}`}
       />
     </>
   )

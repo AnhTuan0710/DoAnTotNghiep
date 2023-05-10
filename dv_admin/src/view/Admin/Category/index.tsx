@@ -45,21 +45,6 @@ function Category() {
     setCategoryName(e.target.value)
   }
 
-  const _renderFormSearch = () => {
-    return (
-      <div className='search-container' >
-        <Input
-          value={categoryName}
-          onChange={onChange}
-          size="large"
-          placeholder="Nhập tên danh mục"
-          prefix={<SearchOutlined />}
-          className='input'
-        />
-      </div>
-    )
-  }
-
   const handleOk = () => {
     getAllCategory()
   }
@@ -84,7 +69,6 @@ function Category() {
     <>
       <div className='category-container'>
         {_renderHeaderCategory()}
-        {_renderFormSearch()}
         <div style={{ margin: 1 }}>
           <TableListCategory
             listCate={listCategory}

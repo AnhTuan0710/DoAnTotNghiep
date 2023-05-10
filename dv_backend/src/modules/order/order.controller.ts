@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from '../../models/order.entity';
-import { CreateOrderDto, UpdateOrderDto } from '../../dto/order.dto';
+import { CreateOrderDto, ReportRenuave, UpdateOrderDto } from '../../dto/order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { MailService } from '../mail/mail.service';
 
@@ -15,11 +15,11 @@ export class OrderController {
     @Query('time') time: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-  ): Promise<{ time: string; total: number }[]> {
+  ): Promise<ReportRenuave[]> {
     if (time === 'day') {
-      return await this.orderService.getTotalByDay(startDate,endDate);
+      return await this.orderService.getTotalByDay(startDate, endDate);
     } else {
-      return await this.orderService.getTotalByMonth(startDate,endDate);
+      return await this.orderService.getTotalByMonth(startDate, endDate);
     }
   }
 

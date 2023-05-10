@@ -158,13 +158,13 @@ export default function InvoiceCreateNew() {
           {_renderFormPayMent()}
         </Col>
       </Row>
-      {showModalAddCustomer &&
+      {/* {showModalAddCustomer &&
         <ModalCustomerDetail
           title='Thêm khách hàng mới'
           handleCancel={() => setShowModalAddCustomer(false)}
           handleOk={() => { }}
         />
-      }
+      } */}
     </div>
   )
 }

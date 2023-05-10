@@ -9,7 +9,7 @@ export default function ListCategory() {
   const [listCategory, setListCategory] = useState<CategoryResponse[]>([])
   const natigate = useNavigate()
   const onClick: MenuProps['onClick'] = (e) => {
-    natigate(`/category/${e.key}`, )
+    natigate(`/category/${e.key}`,)
   };
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function ListCategory() {
   const getAllCategory = async () => {
     try {
       const res = await api.category.getAllCategory()
-      setListCategory(res.data)
+      setListCategory(res.data.filter((item: CategoryResponse) => item.active_flg !== 0))
     } catch (err) { }
   }
 

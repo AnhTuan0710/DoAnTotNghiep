@@ -29,6 +29,13 @@ export default function ModalOrderDetail(props: Props) {
     )
   }
 
+  const renderImage = (text: any, record: OrderRespose, index: number) => {
+    return (
+      <div className='image-container'>
+        <img src={text} alt='image' style={{height: '50px'}} />
+      </div>
+    )
+  }
 
   const columns: ColumnsType<any> = [
     {
@@ -39,10 +46,10 @@ export default function ModalOrderDetail(props: Props) {
       render: (text: any, record: OrderRespose, index: number) => <p>{index + 1}</p>,
     },
     {
-      title: 'Mã sản phẩm',
-      dataIndex: 'id',
-      key: 'id',
-      render: text => <p>{text}</p>,
+      title: 'Hình ảnh',
+      dataIndex: 'image',
+      key: 'name',
+      render: renderImage
     },
     {
       title: 'Tên sản phẩm',

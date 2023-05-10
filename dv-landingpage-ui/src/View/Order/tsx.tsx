@@ -19,7 +19,7 @@ export function Order() {
   const [modalDetailInvoice, setModalDetailInvoice] = useState(false)
   const [invoiceInfoDetail, setInvoiceInfoDetail] = useState<OrderRespose>()
   useEffect(() => {
-    getAllOrder()
+    useInfo.name && getAllOrder()
   }, [])
 
   const getAllOrder = async () => {

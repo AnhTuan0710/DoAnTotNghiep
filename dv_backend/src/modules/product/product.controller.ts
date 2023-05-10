@@ -16,19 +16,19 @@ export class ProductController {
     return await this.productService.getBestSellingProducts();
   }
 
+  @Post('create')
+  async create(@Body() createProductDto: ProductDto): Promise<Product> {
+    return await this.productService.createProduct(createProductDto);
+  }
+
   @Post()
-  async findAll(@Query('page') page: number, @Query('size') size: number, @Body() searchParam: ProductSearchDto): Promise<ProductRespose> {
-    return await this.productService.findAll(page, size, searchParam);
+  async findAll(@Body() searchParam: ProductSearchDto, @Query('page') page: number, @Query('size') size: number): Promise<ProductRespose> {
+    return await this.productService.findAll(searchParam, page, size);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Product> {
     return await this.productService.findOne(id);
-  }
-
-  @Post()
-  async create(@Body() createProductDto: ProductDto): Promise<Product> {
-    return await this.productService.createProduct(createProductDto);
   }
 
   @Put(':id')

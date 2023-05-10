@@ -1,9 +1,9 @@
-import { notification, Popconfirm, Table, Tag } from 'antd';
+import { Input, Modal, notification, Popconfirm, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, FileSearchOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router';
 import api from '../../../api';
 import { CategoryResponse } from '../../../dataType/category';
+import { useState } from 'react';
 type Props = {
   listCate: CategoryResponse[]
   getListCategory: () => void
@@ -12,13 +12,16 @@ type Props = {
 
 export default function TableListCategory(props: Props) {
   const { listCate, getListCategory, loadingTable } = props
-  const navigate = useNavigate()
+  const [showModal, setShowModal] = useState(false)
+  const [categorySelect, setCategorySelect] = useState<CategoryResponse>()
+  const [categoryName, setCategoryName] = useState('')
+
   const deleteCategory = async (record: CategoryResponse) => {
     try {
       await api.category.deleteCategory(record.id)
       notification.success({
         message: 'Thông báo',
-        description: 'Xóa danh mục thành công', 
+        description: 'Xóa danh mục thành công',
       })
       getListCategory()
     } catch (err) {
@@ -29,8 +32,28 @@ export default function TableListCategory(props: Props) {
     }
   }
 
+  const handleChangeCategory = async () => {
+    try {
+      categorySelect && await api.category.updateCategory(categorySelect.id, { name: categoryName })
+      notification.success({
+        message: 'Thông báo',
+        description: 'Sửa danh mục thành công',
+      })
+      getListCategory()
+      setShowModal(false)
+      setCategorySelect(undefined)
+    } catch (err) {
+      notification.error({
+        message: 'Thông báo',
+        description: 'Sửa danh mục thất bại',
+      })
+    }
+  }
+
   const handleDetail = (record: CategoryResponse) => {
-    navigate(`/category/${record.id}`, { state: record })
+    setCategoryName(record.name)
+    setCategorySelect(record)
+    setShowModal(true)
   }
 
   const renderDetail = (text: any, record: CategoryResponse, index: number) => {
@@ -39,9 +62,9 @@ export default function TableListCategory(props: Props) {
     )
   }
 
-  const renderStatus= (text: any, record: CategoryResponse, index: number) => {
+  const renderStatus = (text: any, record: CategoryResponse, index: number) => {
     return (
-      <Tag color={text? 'green' : 'red'}>{text? 'Đang kinh doanh': 'Ngừng kinh doanh'}</Tag>
+      <Tag color={text ? 'green' : 'red'}>{text ? 'Đang kinh doanh' : 'Ngừng kinh doanh'}</Tag>
     )
   }
 
@@ -89,13 +112,13 @@ export default function TableListCategory(props: Props) {
       align: 'center',
       render: renderStatus
     },
-    // {
-    //   title: 'Chi tiết',
-    //   dataIndex: 'detail',
-    //   key: 'detail',
-    //   align: 'center',
-    //   render: renderDetail
-    // },
+    {
+      title: 'Sửa',
+      dataIndex: 'detail',
+      key: 'detail',
+      align: 'center',
+      render: renderDetail
+    },
     {
       title: 'Xóa',
       dataIndex: 'remove',
@@ -104,11 +127,37 @@ export default function TableListCategory(props: Props) {
       render: renderRemove
     },
   ];
+
+  const onchangeName = (e: any) => {
+    setCategoryName(e.target.value)
+  }
+
+
+  const _renderModalDetail = () => {
+    return (
+      <Modal
+        visible={true}
+        title={"Sửa danh mục"}
+        onCancel={() => {
+          setShowModal(false)
+          setCategorySelect(undefined)
+        }}
+        onOk={handleChangeCategory}
+      >
+        <p>Tên danh mục:</p>
+        <Input value={categoryName} onChange={onchangeName} />
+      </Modal>
+    )
+  }
   return (
-    <Table 
-    loading={loadingTable}
-    columns={columns} 
-    dataSource={listCate} 
-    />
+    <>
+      <Table
+        loading={loadingTable}
+        columns={columns}
+        dataSource={listCate}
+        rowKey={(record: CategoryResponse) => `${record.id}`}
+      />
+      {showModal && categorySelect && _renderModalDetail()}
+    </>
   )
 }

@@ -1,6 +1,6 @@
 import { Button, Col, Modal, Row, Table, Tag, notification } from "antd";
 import { ColumnsType } from "antd/es/table";
-import { InvoiceRespose, ProductInvoice, UpdateOrderDto } from "../../../dataType/invoice";
+import { InvoiceResponse, ProductInvoice, UpdateOrderDto } from "../../../dataType/invoice";
 import { MoneyFormat } from "../../../Ultils/MoneyFormat";
 import './modal-invoice-detail.scss'
 import { checkStatus } from "../../../Ultils/Status";
@@ -8,13 +8,13 @@ import api from "../../../api";
 type Props = {
   onOk: () => void,
   onCancel: () => void
-  invoiceInfo: InvoiceRespose
+  invoiceInfo: InvoiceResponse
   getListOrder: () => void
 }
 export default function ModalInvoiceDetail(props: Props) {
   const { onOk, onCancel, invoiceInfo, getListOrder } = props
   const listDetailInvoice = invoiceInfo.orderDetails
-  const _renderInvoiceInfoItem = (title: string, value: string) => {
+  const _renderInvoiceInfoItem = (title: string, value: string | number) => {
     return (
       <Col xs={24} md={12}>
         <div className="invoice-detail-info-item">
@@ -38,6 +38,14 @@ export default function ModalInvoiceDetail(props: Props) {
     )
   }
 
+  const renderImage = (text: any, record: ProductInvoice, index: number) => {
+    return (
+      <div className='image-container'>
+        <img src={text} alt='image' />
+      </div>
+    )
+  }
+
   const columns: ColumnsType<any> = [
     {
       title: 'STT',
@@ -47,10 +55,10 @@ export default function ModalInvoiceDetail(props: Props) {
       render: (text: any, record: ProductInvoice, index: number) => <p>{index + 1}</p>,
     },
     {
-      title: 'Mã sản phẩm',
-      dataIndex: 'id',
-      key: 'id',
-      render: text => <p>{text}</p>,
+      title: 'Hình ảnh',
+      dataIndex: 'image',
+      key: 'image',
+      render: renderImage,
     },
     {
       title: 'Tên sản phẩm',
@@ -108,7 +116,7 @@ export default function ModalInvoiceDetail(props: Props) {
   const handleHuy = async (status: number) => {
     try {
       const id = invoiceInfo.id
-      const data: UpdateOrderDto= {
+      const data: UpdateOrderDto = {
         status: status
       }
       await api.invoice.upadteOrder(id, data)
@@ -118,7 +126,7 @@ export default function ModalInvoiceDetail(props: Props) {
       })
       onCancel()
       getListOrder()
-    }catch(err) {
+    } catch (err) {
       notification.error({
         message: "Thông báo",
         description: "Cập nhật hàng thất bại"
@@ -155,7 +163,7 @@ export default function ModalInvoiceDetail(props: Props) {
           <div className="button-group">
             <Button onClick={onCancel}>Đóng</Button>
             {invoiceInfo.status !== 1 &&
-              <Button className="button"  onClick={() => handleHuy(1)}>Xác nhận</Button>
+              <Button className="button" onClick={() => handleHuy(1)}>Xác nhận</Button>
             }
           </div>
         </div>
@@ -165,9 +173,11 @@ export default function ModalInvoiceDetail(props: Props) {
     >
       <Row gutter={[16, 8]}>
         {_renderInvoiceInfoItem('Mã hóa đơn', invoiceInfo.orderNumber)}
-        {_renderInvoiceInfoItemNumber('Tổng đơn hàng', invoiceInfo.totalAmount)}
-        {_renderInvoiceInfoItem('Mã khách hàng', invoiceInfo.user.id)}
         {_renderInvoiceInfoItem('Tên khách hàng', invoiceInfo.user.name)}
+        {_renderInvoiceInfoItem('Mã khách hàng', invoiceInfo.user.id)}
+        {_renderInvoiceInfoItem('Địa chỉ', invoiceInfo.user.address)}
+        {_renderInvoiceInfoItemNumber('Tổng đơn hàng', invoiceInfo.totalAmount)}
+        {_renderInvoiceInfoItem('SĐT', invoiceInfo.user.phone_no)}
         {_renderStatus()}
       </Row>
       <div className="mt-3">

@@ -26,32 +26,30 @@ export class ProductService {
     product.unit = unit;
     product.description = description;
     product.category = category;
-
     return await this.productRepository.save(product);
   }
 
-  async findAll(page: number, size: number, searchParam: ProductSearchDto): Promise<ProductRespose> {
+  async findAll(searchParam: ProductSearchDto, page: number, size: number,): Promise<ProductRespose> {
     const { categoryId, name } = searchParam;
     const queryBuilder = this.productRepository.createQueryBuilder('dv_product')
       .leftJoinAndSelect('dv_product.category', 'dv_category')
       .where('dv_product.active_flg != 0');
-  
     if (categoryId && categoryId.length > 0) {
       queryBuilder.andWhere('dv_category.id IN (:...categoryId)', { categoryId });
     }
-  
+
     if (name) {
       queryBuilder.andWhere('dv_product.name LIKE :name', { name: `%${name}%` });
     }
-  
+
     const data: ProductRespose = {
       data: (await queryBuilder.skip((page - 1) * size).take(size).getMany()),
       total: (await this.productRepository.find({ where: { active_flg: 1 } })).length
     };
-  
+
     return data;
   }
-  
+
 
   async findOne(id: number): Promise<Product> {
     return await this.productRepository.findOne({
@@ -63,7 +61,7 @@ export class ProductService {
   }
 
   async updateProduct(id: number, productDto: ProductDto): Promise<Product> {
-    const { name, price, image, size, weight, description, categoryId, status } = productDto;
+    const { name, price, image, size, weight, description, categoryId, status, unit } = productDto;
     const category = await this.categoryRepository.findOne({ where: { id: categoryId } });
     const product = await this.productRepository.findOne({ where: { id: id } });
     product.name = name;
@@ -74,6 +72,7 @@ export class ProductService {
     product.description = description;
     product.category = category;
     product.status = status;
+    product.unit = unit;
     return await this.productRepository.save(product);
   }
 
