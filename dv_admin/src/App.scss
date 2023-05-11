@@ -196,17 +196,7 @@ a {
   height: 40px;
   padding-top: 8px;
 }
-.ant-modal-close-x {
-  display: block;
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
-  font-style: normal;
-  line-height: 40px;
-  text-align: center;
-  text-transform: none;
-  text-rendering: auto;
-}
+
 .ant-modal-title {
   margin: 0;
   color: rgba(255, 255, 255, 0.85);
@@ -913,7 +903,7 @@ body {
 }
 .ant-btn-sm,
 .ant-radio-group-small .ant-radio-button-wrapper {
-  height: 34px;
+  height: 40px;
   font-size: 12px;
   padding: 0 15px;
 }
@@ -923,7 +913,7 @@ body {
 
 .ant-btn-sm,
 .ant-radio-group-small .ant-radio-button-wrapper {
-  height: 34px;
+  height: 40px;
   font-size: 12px;
   padding: 0 15px;
 }
@@ -2365,9 +2355,9 @@ body {
   margin-right: 5px;
 }
 .header-col.header-btn button {
-  height: 34px;
+  height: 40px;
   padding: 0 16px;
-  border-radius: 34px;
+  border-radius: 40px;
   line-height: 33px;
 }
 .sign-up-header .content {
@@ -2636,10 +2626,6 @@ body {
   color: #8c8c8c;
 }
 
-.row-col .ant-row {
-  margin-left: 0px;
-  margin-right: 0px;
-}
 .layout-default.ant-layout.layout-sign-up .header-col.header-brand h5 {
   color: #fff;
 }
@@ -2961,7 +2947,7 @@ section.ant-layout.layout-content .ant-layout-content.content-ant {
 }
 
 .card-billing-info .col-action button {
-  height: 34px;
+  height: 40px;
   font-size: 12px;
   padding: 0 15px;
   box-shadow: none;

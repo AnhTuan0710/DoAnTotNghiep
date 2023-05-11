@@ -3,11 +3,11 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Order } from "../../models/order.entity";
 import { Repository } from "typeorm";
-import { CreateOrderDto, ReportRenuave, UpdateOrderDto } from "../../dto/order.dto";
+import { CreateOrderDto, ReportRenuave, ReportTime, UpdateOrderDto } from "../../dto/order.dto";
 import { Product } from "../../models/product.entity";
 import { User } from "../../models/user.entity";
 import { MailService } from '../mail/mail.service';
-import { addDays, format, parseISO } from 'date-fns';
+import { addDays, endOfDay, endOfMonth, format, parseISO, startOfDay, startOfMonth } from 'date-fns';
 import * as moment from 'moment';
 
 @Injectable()
@@ -122,8 +122,9 @@ export class OrderService {
   }
 
   async getTotalByDay(startDate: string, endDate: string): Promise<ReportRenuave[]> {
-    const start = parseISO(startDate);
-    const end = parseISO(endDate);
+    const today = new Date()
+    const start = startDate ? parseISO(startDate) : startOfMonth(today);
+    const end = endDate ? parseISO(endDate) : endOfMonth(today);
 
     const dateList: string[] = [];
     let currentDate = start;
@@ -138,6 +139,7 @@ export class OrderService {
       .addSelect('COUNT(dv_order.id) as total_invoice')
       .where(`dv_order.create_date >= :startDate AND dv_order.create_date <= :endDate`, { startDate, endDate })
       .andWhere('dv_order.active_flg != 0')
+      .andWhere('dv_order.status != 0')
       .groupBy('DATE(dv_order.create_date)')
       .orderBy('DATE(dv_order.create_date)')
       .getRawMany();
@@ -162,14 +164,14 @@ export class OrderService {
     return listData;
   }
 
-  async getTotalByMonth(startDate: string, endDate: string): Promise<ReportRenuave[]> {
+  async getTotalByMonth(): Promise<ReportRenuave[]> {
     const result = await this.orderRepository
       .createQueryBuilder('dv_order')
       .select('MONTH(dv_order.create_date) as time')
       .addSelect('SUM(dv_order.totalAmount) as total')
       .addSelect('COUNT(dv_order.id) as total_invoice')
-      .where(`dv_order.create_date >= :startDate AND dv_order.create_date <= :endDate`, { startDate, endDate })
       .andWhere('dv_order.active_flg != 0')
+      .andWhere('dv_order.status != 0')
       .groupBy('MONTH(dv_order.create_date)')
       .orderBy('MONTH(dv_order.create_date)')
       .getRawMany();
@@ -178,13 +180,13 @@ export class OrderService {
       const index = result.findIndex(item => item.time === i)
       if (index !== -1) {
         listData.push({
-          time: result[index].time,
+          time: `Tháng ${i}`,
           total: Number(result[index].total),
           total_invoice: Number(result[index].total_invoice)
         })
       } else {
         listData.push({
-          time: i,
+          time: `Tháng ${i}`,
           total: 0,
           total_invoice: 0
         })
@@ -193,4 +195,42 @@ export class OrderService {
     return listData
   }
 
+  async reportTime(): Promise<ReportTime> {
+    const today = new Date();
+    const startOfToday = startOfDay(today);
+    const endOfToday = endOfDay(today);
+    const startMonth = startOfMonth(today);
+    const endMonth = endOfMonth(today);
+
+    const dailyResult: ReportRenuave[] = await this.orderRepository
+      .createQueryBuilder('dv_order')
+      .select('SUM(dv_order.totalAmount) as total')
+      .addSelect('COUNT(dv_order.id) as total_invoice')
+      .where('dv_order.create_date >= :startOfToday AND dv_order.create_date <= :endOfToday', {
+        startOfToday,
+        endOfToday,
+      })
+      .andWhere('dv_order.active_flg != 0')
+      .andWhere('dv_order.status != 0')
+      .getRawMany();
+
+    const monthlyResult: ReportRenuave[] = await this.orderRepository
+      .createQueryBuilder('dv_order')
+      .select('SUM(dv_order.totalAmount) as total')
+      .addSelect('COUNT(dv_order.id) as total_invoice')
+      .where('dv_order.create_date >= :startMonth AND dv_order.create_date <= :endMonth', {
+        startMonth,
+        endMonth,
+      })
+      .andWhere('dv_order.active_flg != 0')
+      .andWhere('dv_order.status != 0')
+      .getRawMany();
+
+    const total_date = dailyResult.length > 0 ? Number(dailyResult[0].total) : 0;
+    const total_order_date = dailyResult.length > 0 ? Number(dailyResult[0].total_invoice) : 0;
+    const total_month = monthlyResult.length > 0 ? Number(monthlyResult[0].total) : 0;
+    const total_order_month = monthlyResult.length > 0 ? Number(monthlyResult[0].total_invoice) : 0;
+
+    return { total_order_date, total_date, total_order_month, total_month };
+  }
 }

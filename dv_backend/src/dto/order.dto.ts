@@ -31,3 +31,10 @@ export class ReportRenuave {
   total: number;
   total_invoice: number;
 }
+
+export class ReportTime {
+  total_order_date: number;
+  total_date: number;
+  total_order_month: number;
+  total_month: number;
+}

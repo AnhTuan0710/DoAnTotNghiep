@@ -4,7 +4,7 @@ import { ColumnsType } from "antd/es/table"
 import { useState } from "react"
 import FormInput from "../../../components/FormInput"
 import FormRangerPicker from "../../../components/FormRangerPicker"
-import { ReportProductType } from "../../../dataType/reportProduct"
+import { ReportProductType } from "../../../dataType/report"
 import { MoneyFormat } from "../../../Ultils/MoneyFormat"
 
 export default function Inventory() {

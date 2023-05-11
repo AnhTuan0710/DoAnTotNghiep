@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from '../../models/order.entity';
-import { CreateOrderDto, ReportRenuave, UpdateOrderDto } from '../../dto/order.dto';
+import { CreateOrderDto, ReportRenuave, ReportTime, UpdateOrderDto } from '../../dto/order.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { MailService } from '../mail/mail.service';
 
 @Controller('orders')
 @ApiTags('orders')
@@ -19,8 +18,13 @@ export class OrderController {
     if (time === 'day') {
       return await this.orderService.getTotalByDay(startDate, endDate);
     } else {
-      return await this.orderService.getTotalByMonth(startDate, endDate);
+      return await this.orderService.getTotalByMonth();
     }
+  }
+
+  @Get('report')
+  async report(): Promise<ReportTime> {
+    return await this.orderService.reportTime();
   }
 
   @Get()

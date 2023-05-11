@@ -22,7 +22,7 @@ export default function Cart() {
   const handleCreateInvoice = async () => {
     setLoading(true)
     try {
-      if(!userInfo.phone_no || !userInfo.address) {
+      if (!userInfo.phone_no || !userInfo.address) {
         notification.warning({
           message: "Thông báo",
           description: "Yêu cầu nhập đầy đủ thông tin"
@@ -41,13 +41,13 @@ export default function Cart() {
           }
         })
       }
-      if(!userInfo.name){
+      if (!userInfo.name) {
         notification.warning({
           message: 'Thông báo',
           description: 'Bạn cần đăng nhập để hoàn thành đơn hàng!'
         })
         setLoading(false)
-        return 
+        return
       }
       await api.order.createNewOrder(data)
       notification.success({
@@ -61,7 +61,7 @@ export default function Cart() {
         message: 'Thông báo',
         description: "Tạo đơn hàng thất bại"
       })
-    }finally{
+    } finally {
       setLoading(false)
     }
   }
@@ -183,7 +183,7 @@ export default function Cart() {
       <div className='info-checkout'>
         <h5>
           Thông tin thanh toán
-          <Button className='mx-2' style={{ border: 'none', color:'blue' }} onClick={() => navigate('/user')}>
+          <Button className='mx-2' style={{ border: 'none', color: 'blue' }} onClick={() => navigate('/user')}>
             <EditOutlined />  Sửa
           </Button>
         </h5>
@@ -195,9 +195,9 @@ export default function Cart() {
         <Button
           className='button'
           onClick={handleCreateInvoice}
-          style={{ marginBottom: '30px',fontWeight: 700 }}
+          style={{ marginBottom: '30px', fontWeight: 700 }}
           size='large'
-          disabled={cart.productIds.length === 0}
+          disabled={!cart.productIds || cart.productIds.length === 0}
           loading={loading}
         >
           TẠO ĐƠN
