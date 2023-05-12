@@ -13,23 +13,36 @@ import {
   notification,
 } from "antd";
 import { LOGO } from "../../../assets";
-import { SIGNUP, SINGIN, TEMPLATE } from "../../../elements";
+import { SINGIN, TEMPLATE } from "../../../elements";
+import api from "../../../api";
+import { LoginParam } from "../../../dataType/user";
+import { useDispatch } from "react-redux";
+import { saveInfoUser, SaveToken } from "../../../redux/action/auth";
 const { Title } = Typography;
 const { Header, Content } = Layout;
 export default function SignIn() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [showPW, setShowPW] = useState(false)
-  const onFinish = (values: any) => {
-    if (values.account === '0857847685' && values.password === '123123') {
-      navigate('/invoice')
-    }
-    else if (values.account === '0857847686' && values.password === '123123') {
-      navigate('/invoice')
-    }
-    else {
+  const onFinish = async (values: any) => {
+    try {
+      const data: LoginParam = {
+        email: values.email,
+        password: values.password,
+        role: 'admin'
+      }
+      const res = await api.auth.login(data)
+      dispatch(SaveToken(res.data.access_token))
+      dispatch(saveInfoUser(res.data.user))
+      notification.success({
+        message: 'Thông báo',
+        description: 'Đăng nhập thành công',
+      })
+      navigate('/dashboard')
+    } catch (err) {
       notification.error({
         message: 'Thông báo',
-        description: 'Sai tên đăng nhập hoặc mật khẩu',
+        description: 'Thông tin đăng nhập không chính xác',
       })
     }
   };
@@ -117,11 +130,11 @@ export default function SignIn() {
         layout="vertical"
         className="row-col"
       >
-        {_renderFormItem('Tên tài khoản', 'account', 'Nhập tên tài khoản !', 'Nhập tên tài khoản')}
+        {_renderFormItem('Email', 'email', 'Nhập email tài khoản !', 'Nhập email tài khoản')}
         {_renderFormItem('Mật khẩu', 'password', 'Nhập mật khẩu !', 'Nhập mật khẩu', showPW ? "text" : 'password')}
         {_renderCheckShowPassword()}
         {_renderButtonSignIn()}
-        {_renderLinkToSignUp()}
+        {/* {_renderLinkToSignUp()} */}
       </Form>
     )
   }

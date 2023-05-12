@@ -134,7 +134,7 @@ export default function Category() {
             <h4>SẢN PHẨM</h4>
           </div>
         </div>
-        <div style={{ textAlign: 'right', margin: '10px' }}>
+        <div style={{ textAlign: 'right', margin: '10px 0px' }}>
           <Input
             className="header-search"
             placeholder="Nhập tên sản phẩm..."
@@ -142,6 +142,7 @@ export default function Category() {
             onChange={onchangeNameSearch}
             prefix={<SearchOutlined />}
             style={{ width: '300px' }}
+            size='large'
           />
         </div>
         <Row gutter={24}>

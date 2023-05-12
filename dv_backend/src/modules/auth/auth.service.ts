@@ -21,16 +21,28 @@ export class AuthService {
     return null;
   }
 
-  async login(user: { email: string, password: string }) {
+  async login(user: { email: string, password: string, role?: string }) {
     const dbUser = await this.usersService.findOne(user.email);
-    if (dbUser && dbUser.active_flg !== 0 && await bcrypt.compare(user.password, dbUser.password)) {
-      const payload = { email: dbUser.email, sub: dbUser.id };
-      return {
-        access_token: this.jwtService.sign(payload),
-        user: dbUser
-      };
+    if (user.role) {
+      if (dbUser && dbUser.active_flg !== 0 && await bcrypt.compare(user.password, dbUser.password) && dbUser.role === 'admin') {
+        const payload = { email: dbUser.email, sub: dbUser.id };
+        return {
+          access_token: this.jwtService.sign(payload),
+          user: dbUser
+        };
+      }
+      throw new UnauthorizedException('Invalid credentials');
+    } else {
+      if (dbUser && dbUser.active_flg !== 0 && await bcrypt.compare(user.password, dbUser.password)) {
+        const payload = { email: dbUser.email, sub: dbUser.id };
+        return {
+          access_token: this.jwtService.sign(payload),
+          user: dbUser
+        };
+      }
+      throw new UnauthorizedException('Invalid credentials');
     }
-    throw new UnauthorizedException('Invalid credentials');
+
   }
 
   async getUserFromToken(token) {

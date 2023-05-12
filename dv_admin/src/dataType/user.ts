@@ -3,3 +3,9 @@ export interface UserType {
   user_cd: string, 
   passwork: string,
 }
+
+export interface LoginParam {
+  email: string,
+  password: string,
+  role: string
+}

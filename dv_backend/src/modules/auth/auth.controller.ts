@@ -1,4 +1,3 @@
-import { ChangePassword } from './../../dto/user.dto';
 import { Controller, Post, Body, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { ChangePWDto, RegisterDto } from '../../dto/register.dto';
 import { MailService } from '../mail/mail.service';

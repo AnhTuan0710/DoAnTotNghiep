@@ -3,9 +3,14 @@ import {
   Row,
   Col,
   Breadcrumb,
+  Tooltip,
 } from "antd";
 
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/reduce";
+import { LogOut } from "../redux/action/auth";
+import { ExportOutlined } from "@ant-design/icons";
 
 const profile = [
   <svg
@@ -37,7 +42,17 @@ type Props = {
 
 function Header(props: Props) {
   const { subName } = props
+  const auth = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   useEffect(() => window.scrollTo(0, 0));
+
+  const logOut = () => {
+    dispatch(LogOut())
+    navigate('/sign-in')
+  }
+
   return (
     <>
       <Row gutter={[24, 0]}>
@@ -57,15 +72,14 @@ function Header(props: Props) {
           </div>
         </Col>
         <Col span={24} md={18} className="header-control">
-          <div style={{ padding: '10px', borderRadius: '5px', boxShadow: '2px 2px 2px' }}>
-            <h5>
-              Ninh Văn Tuấn
-              <Link to="/sign-in" className="btn-sign-in">
-                {profile}
-                <span>Sign in</span>
-              </Link>
+          <div style={{ padding: '10px', borderRadius: '5px', boxShadow: '2px 2px 2px' }} onClick={logOut}>
+            <h5 className="d-flex align-items-center"  >
+              {auth.name && profile}
+              {auth.name ? auth.name : 'Đăng nhập'}
+              <Tooltip placement="top" title={auth.name ? 'Đăng xuất' : 'Đăng nhập'}>
+                <ExportOutlined style={{ marginLeft: 10 }} />
+              </Tooltip>
             </h5>
-
           </div>
         </Col>
       </Row>

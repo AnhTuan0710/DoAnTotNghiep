@@ -3,6 +3,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Layout, Affix } from "antd";
 import Sidenav from "./Sidenav";
 import Header from "./Header";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/reduce";
 const { Header: AntHeader, Footer, Sider, Content } = Layout;
 function Main() {
   const [visible, setVisible] = useState(false)
@@ -13,6 +15,7 @@ function Main() {
   const handleFixedNavbar = (type: any) => { };
   let { pathname } = useLocation();
   pathname = pathname.replace("/", "");
+  const auth = useSelector((state: RootState) => state.auth)
   return (
     <Layout className="layout-dashboard">
       <Sider
@@ -44,7 +47,10 @@ function Main() {
           </AntHeader>
         </Affix>
         <Content>
-          <Outlet></Outlet>
+          {auth.token ?
+            <Outlet></Outlet>
+            : <p className="text-center" style={{marginTop: '200px'}}>Đăng nhập để sử dụng phần mềm</p>
+          }
         </Content>
         <Footer style={{ textAlign: 'center' }}>
           @Copyright by KIT - Phần mềm quản lý cửa hàng kim khí Duc Viet - Version 1.0.0

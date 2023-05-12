@@ -87,7 +87,7 @@ export default function ReportInvoice() {
     <div className='report-invoice'>
       <div className='header-invoice'>
         <h4>{listInvoice.length > 0 && `${listInvoice.length} Hóa đơn chưa được duyệt`}</h4>
-        <Link to="/invoice">{'Xem tất cả >>'}</Link>
+        <Link to="/invoice" className='link-action'>{'Xem tất cả >>'}</Link>
       </div>
       <Table
         rowKey={(record: InvoiceResponse) => `${record.id}`}

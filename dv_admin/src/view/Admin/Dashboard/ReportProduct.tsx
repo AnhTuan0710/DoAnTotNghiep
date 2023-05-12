@@ -31,7 +31,7 @@ export default function ReportProduct() {
   }
   return (
     <div className='report-product'>
-      <h4>Sản phẩm bán chạy:</h4>
+      <h4>Top 5 sản phẩm bán chạy:</h4>
       {listProduct.map((item: ProductTrending, index: number) => {
         if (index < 5) return _renderProductItem(item, index)
       })}
