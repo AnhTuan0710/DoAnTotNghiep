@@ -22,6 +22,14 @@ export default function Cart() {
   const handleCreateInvoice = async () => {
     setLoading(true)
     try {
+      if (!userInfo.name) {
+        notification.warning({
+          message: 'Thông báo',
+          description: 'Bạn cần đăng nhập để hoàn thành đơn hàng!'
+        })
+        setLoading(false)
+        return
+      }
       if (!userInfo.phone_no || !userInfo.address) {
         notification.warning({
           message: "Thông báo",
@@ -40,14 +48,6 @@ export default function Cart() {
             quantity: item.quantity
           }
         })
-      }
-      if (!userInfo.name) {
-        notification.warning({
-          message: 'Thông báo',
-          description: 'Bạn cần đăng nhập để hoàn thành đơn hàng!'
-        })
-        setLoading(false)
-        return
       }
       await api.order.createNewOrder(data)
       notification.success({

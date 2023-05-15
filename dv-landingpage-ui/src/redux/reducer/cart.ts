@@ -1,5 +1,5 @@
 import { CartRequest } from "../../dataType/cart";
-import { CLEAR_CART, UPDATE_CART } from "../type";
+import { CLEAR_CART, UPDATE_CART, UPDATE_USER } from "../type";
 
 const initCart: CartRequest = {
   orderNumber: 0,
@@ -17,6 +17,12 @@ export default function cart(state = initCart, action: any) {
         ...data,
         totalAmount
       };
+    case UPDATE_USER: {
+      return {
+        ...state,
+        userId: data
+      }
+    }
     case CLEAR_CART: {
       return initCart
     }

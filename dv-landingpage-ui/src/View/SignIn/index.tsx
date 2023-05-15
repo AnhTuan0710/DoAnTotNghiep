@@ -8,6 +8,7 @@ import api from '../../api';
 import { useDispatch } from 'react-redux';
 import { SaveToken, saveInfoUser } from '../../redux/action/auth';
 import { saveOrder } from '../../redux/action/order';
+import { updateUser } from '../../redux/action/cart';
 
 function SignIn() {
   const navigate = useNavigate()
@@ -20,6 +21,7 @@ function SignIn() {
       const res = await api.auth.login(values)
       dispatch(SaveToken(res.data.access_token))
       dispatch(saveInfoUser(res.data.user))
+      dispatch(updateUser(res.data.user.id))
       navigate('/dashboard')
     } catch (err) {
       notification.error({
